@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dataset Details | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Dataset Details
+{% endblock %}
+
+{% block content %}
+
+<div class="details-page">
+
+    <div class="details-header">
+
+        <div>
+
+            <div class="data-eyebrow">
+                DATA MANAGEMENT / DATASET
+            </div>
+
+            <h1>
+                {{ dataset.name }}
+            </h1>
+
+            <p>
+                Detailed information and structural overview
+                of this business dataset.
+            </p>
+
+        </div>
+
+        <div class="details-header-actions">
+
+            <a
+                href="{% url 'data_quality' dataset.id %}"
+                class="details-button"
+            >
+                Data Quality
+            </a>
+
+            <a
+                href="{% url 'download_dataset' dataset.id %}"
+                class="details-button primary"
+            >
+                Download
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="details-stats">
+
+        <div class="details-stat">
+            <span>ROWS</span>
+            <strong>{{ statistics.rows }}</strong>
+        </div>
+
+        <div class="details-stat">
+            <span>COLUMNS</span>
+            <strong>{{ statistics.columns }}</strong>
+        </div>
+
+        <div class="details-stat">
+            <span>MISSING</span>
+            <strong>{{ statistics.missing_values }}</strong>
+        </div>
+
+        <div class="details-stat">
+            <span>DUPLICATES</span>
+            <strong>{{ statistics.duplicate_rows }}</strong>
+        </div>
+
+    </div>
+
+
+    <div class="details-section">
+
+        <div class="manage-section-header">
+
+            <div>
+
+                <span>
+                    DATASET STRUCTURE
+                </span>
+
+                <h2>
+                    Detected Columns
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="dataset-table-wrapper">
+
+            <table class="dataset-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Column</th>
+                        <th>Detected Type</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for column in columns %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ column }}
+                            </strong>
+                        </td>
+
+                        <td>
+
+                            {% for key, value in column_types.items %}
+
+                                {% if key == column %}
+
+                                    <span class="dataset-type-badge">
+                                        {{ value.type }}
+                                    </span>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="details-section">
+
+        <div class="manage-section-header">
+
+            <div>
+
+                <span>
+                    SAMPLE DATA
+                </span>
+
+                <h2>
+                    First 10 Records
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="dataset-table-wrapper">
+
+            <table class="dataset-table">
+
+                <thead>
+
+                    <tr>
+
+                        {% for column in columns %}
+
+                        <th>
+                            {{ column }}
+                        </th>
+
+                        {% endfor %}
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in preview %}
+
+                    <tr>
+
+                        {% for column in columns %}
+
+                        <td>
+                            {{ row|get_item:column }}
+                        </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="details-back">
+
+        <a href="{% url 'manage_data' %}">
+            ← Back to Manage Data
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

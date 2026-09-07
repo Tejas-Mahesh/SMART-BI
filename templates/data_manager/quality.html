@@ -1,0 +1,793 @@
+{% extends "base.html" %}
+
+{% block title %}
+Data Quality | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Data Quality
+{% endblock %}
+
+{% block content %}
+
+<div class="quality-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="quality-header">
+
+        <div>
+
+            <div class="data-eyebrow">
+                DATA MANAGEMENT / QUALITY
+            </div>
+
+            <h1>
+                Data Quality Analysis
+            </h1>
+
+            <p>
+                Analyze the reliability, completeness and
+                consistency of your business dataset.
+            </p>
+
+        </div>
+
+        <div class="quality-dataset-badge">
+
+            <span class="quality-badge-label">
+                DATASET
+            </span>
+
+            <strong>
+                {{ dataset.name }}
+            </strong>
+
+            <small>
+                {{ dataset.get_dataset_type_display }}
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCORE SECTION
+    ====================================================== -->
+
+    <div class="quality-score-layout">
+
+        <div class="quality-score-card">
+
+            <div class="quality-score-circle">
+
+                <div class="quality-score-number">
+                    {{ quality_score|floatformat:0 }}
+                </div>
+
+                <div class="quality-score-percent">
+                    %
+                </div>
+
+            </div>
+
+            <div class="quality-score-content">
+
+                <span class="quality-section-label">
+                    OVERALL QUALITY SCORE
+                </span>
+
+                <h2>
+                    {{ quality_level.label }}
+                </h2>
+
+                <p>
+                    Your dataset has been evaluated across
+                    completeness, duplicates, validity and
+                    statistical consistency.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-metric-card">
+
+            <div class="quality-metric-icon">
+                ◫
+            </div>
+
+            <div>
+
+                <span>
+                    ROWS
+                </span>
+
+                <strong>
+                    {{ summary.rows }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-metric-card">
+
+            <div class="quality-metric-icon">
+                ▦
+            </div>
+
+            <div>
+
+                <span>
+                    COLUMNS
+                </span>
+
+                <strong>
+                    {{ summary.columns }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-metric-card">
+
+            <div class="quality-metric-icon">
+                !
+            </div>
+
+            <div>
+
+                <span>
+                    MISSING VALUES
+                </span>
+
+                <strong>
+                    {{ summary.missing_values }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-metric-card">
+
+            <div class="quality-metric-icon">
+                ↻
+            </div>
+
+            <div>
+
+                <span>
+                    DUPLICATES
+                </span>
+
+                <strong>
+                    {{ summary.duplicate_rows }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DATA PROFILE
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    DATA PROFILE
+                </span>
+
+                <h2>
+                    Dataset Composition
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-grid">
+
+            <div class="profile-card">
+
+                <span>
+                    NUMERIC COLUMNS
+                </span>
+
+                <strong>
+                    {{ summary.numeric_columns }}
+                </strong>
+
+                <small>
+                    Suitable for calculations
+                </small>
+
+            </div>
+
+
+            <div class="profile-card">
+
+                <span>
+                    TEXT COLUMNS
+                </span>
+
+                <strong>
+                    {{ summary.text_columns }}
+                </strong>
+
+                <small>
+                    Categories and labels
+                </small>
+
+            </div>
+
+
+            <div class="profile-card">
+
+                <span>
+                    DATE COLUMNS
+                </span>
+
+                <strong>
+                    {{ summary.date_columns }}
+                </strong>
+
+                <small>
+                    Time-based analysis
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ISSUES
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    QUALITY ISSUES
+                </span>
+
+                <h2>
+                    Problems Detected
+                </h2>
+
+            </div>
+
+            <div class="issue-count">
+                {{ issues|length }} issue(s)
+            </div>
+
+        </div>
+
+
+        {% if issues %}
+
+        <div class="quality-table-wrapper">
+
+            <table class="quality-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Category</th>
+                        <th>Column</th>
+                        <th>Issue</th>
+                        <th>Severity</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for issue in issues %}
+
+                    <tr>
+
+                        <td>
+                            {{ issue.category }}
+                        </td>
+
+                        <td>
+                            {{ issue.column }}
+                        </td>
+
+                        <td>
+                            {{ issue.issue }}
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                severity-badge
+                                severity-{{ issue.severity|lower }}
+                            ">
+                                {{ issue.severity }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="quality-empty">
+
+            <div class="quality-empty-icon">
+                ✓
+            </div>
+
+            <h3>
+                No Major Issues Detected
+            </h3>
+
+            <p>
+                Your dataset currently meets the main
+                quality checks.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =====================================================
+         MISSING VALUES
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    COMPLETENESS
+                </span>
+
+                <h2>
+                    Missing Value Analysis
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-table-wrapper">
+
+            <table class="quality-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Column</th>
+                        <th>Missing Values</th>
+                        <th>Missing %</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in missing_analysis %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.column }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.missing_count }}
+                        </td>
+
+                        <td>
+                            {{ item.missing_percentage }}%
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                severity-badge
+                                severity-{{ item.severity|lower }}
+                            ">
+                                {{ item.status }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         COLUMN TYPES
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    STRUCTURE
+                </span>
+
+                <h2>
+                    Column Type Analysis
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-table-wrapper">
+
+            <table class="quality-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Column</th>
+                        <th>Pandas Type</th>
+                        <th>Detected Business Type</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in type_analysis %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.column }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.pandas_dtype }}
+                        </td>
+
+                        <td>
+
+                            <span class="type-badge">
+                                {{ item.detected_type }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INVALID VALUES
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    VALIDATION
+                </span>
+
+                <h2>
+                    Invalid Value Analysis
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="quality-table-wrapper">
+
+            <table class="quality-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Column</th>
+                        <th>Invalid Values</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in invalid_analysis %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.column }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.invalid_count }}
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                severity-badge
+                                severity-{{ item.severity|lower }}
+                            ">
+                                {{ item.status }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         OUTLIERS
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    STATISTICAL QUALITY
+                </span>
+
+                <h2>
+                    Outlier Detection
+                </h2>
+
+            </div>
+
+            <div class="issue-count">
+                {{ outlier_analysis.total }} detected
+            </div>
+
+        </div>
+
+
+        <div class="quality-table-wrapper">
+
+            <table class="quality-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Numeric Column</th>
+                        <th>Outliers</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in outlier_analysis.columns %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.column }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.outlier_count }}
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                severity-badge
+                                severity-{{ item.severity|lower }}
+                            ">
+                                {{ item.status }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="3">
+                            No numeric columns available
+                            for outlier analysis.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECOMMENDATIONS
+    ====================================================== -->
+
+    <div class="quality-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>
+                    DATA QUALITY ADVISOR
+                </span>
+
+                <h2>
+                    Recommendations
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="recommendation-grid">
+
+            {% for item in recommendations %}
+
+            <div class="
+                quality-recommendation
+                recommendation-{{ item.severity|lower }}
+            ">
+
+                <div class="recommendation-icon">
+
+                    {% if item.severity == "Critical" %}
+                        !
+                    {% elif item.severity == "Warning" %}
+                        ⚠
+                    {% else %}
+                        ✓
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        {{ item.title }}
+                    </h3>
+
+                    <p>
+                        {{ item.description }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NEXT STEP
+    ====================================================== -->
+
+    <div class="quality-next-step">
+
+        <div>
+
+            <span>
+                NEXT DATA MANAGEMENT STEP
+            </span>
+
+            <h2>
+                Clean & Manage Your Dataset
+            </h2>
+
+            <p>
+                After reviewing data quality, the next stage
+                will allow you to clean, manage and prepare
+                datasets for business analytics.
+            </p>
+
+        </div>
+
+        <div class="next-step-number">
+            03
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

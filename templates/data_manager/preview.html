@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+{% load data_filters %}
+{% block title %}
+Smart BI | Dataset Preview
+{% endblock %}
+
+{% block page_heading %}
+Dataset Preview
+{% endblock %}
+
+{% block content %}
+
+<div class="data-page">
+
+    <div class="data-header">
+
+        <div>
+
+            <div class="data-eyebrow">
+                DATA MANAGEMENT
+            </div>
+
+            <h2>
+                {{ dataset.name }}
+            </h2>
+
+            <p>
+                Review the uploaded dataset before
+                continuing to Data Quality.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'upload_data' %}"
+            class="secondary-button"
+        >
+            ← Upload Another
+        </a>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="dataset-stat-grid">
+
+        <div class="dataset-stat-card">
+
+            <span>
+                Rows
+            </span>
+
+            <strong>
+                {{ statistics.rows }}
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat-card">
+
+            <span>
+                Columns
+            </span>
+
+            <strong>
+                {{ statistics.columns }}
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat-card">
+
+            <span>
+                Missing Values
+            </span>
+
+            <strong>
+                {{ statistics.missing_values }}
+            </strong>
+
+        </div>
+
+
+        <div class="dataset-stat-card">
+
+            <span>
+                Duplicate Rows
+            </span>
+
+            <strong>
+                {{ statistics.duplicate_rows }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- DATASET INFORMATION -->
+
+    <div class="preview-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Dataset Information
+                </h3>
+
+                <p>
+                    File and structural information
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="dataset-info-grid">
+
+            <div>
+                <span>Dataset</span>
+                <strong>
+                    {{ dataset.name }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Type</span>
+                <strong>
+                    {{ dataset.get_dataset_type_display }}
+                </strong>
+            </div>
+
+            <div>
+                <span>File</span>
+                <strong>
+                    {{ dataset.file.name }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Status</span>
+                <strong class="active-status">
+                    Active
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- COLUMN TYPES -->
+
+    <div class="preview-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Detected Columns
+                </h3>
+
+                <p>
+                    Smart BI detected the following
+                    columns and basic data types.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="column-table">
+
+            <div class="column-row column-header">
+
+                <div>
+                    Column
+                </div>
+
+                <div>
+                    Pandas Type
+                </div>
+
+                <div>
+                    Detected Type
+                </div>
+
+            </div>
+
+
+            {% for column, information in column_types.items %}
+
+                <div class="column-row">
+
+                    <div class="column-name">
+                        {{ column }}
+                    </div>
+
+                    <div>
+                        {{ information.dtype }}
+                    </div>
+
+                    <div>
+                        <span class="type-badge">
+                            {{ information.type }}
+                        </span>
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-preview">
+                    No columns detected.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- DATA PREVIEW -->
+
+    <div class="preview-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Data Preview
+                </h3>
+
+                <p>
+                    First 10 records from the uploaded dataset.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="data-preview-table">
+
+                <thead>
+
+                    <tr>
+
+                        {% for column in columns %}
+
+                            <th>
+                                {{ column }}
+                            </th>
+
+                        {% endfor %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for row in preview %}
+
+                        <tr>
+
+                            {% for column in columns %}
+
+                                <td>
+                                    {{ row|get_item:column }}
+                                </td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="{{ columns|length }}"
+                            >
+                                No records available.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="next-step-card">
+
+        <div>
+
+            <span>
+                <a
+    href="{% url 'data_quality' dataset.id %}"
+    class="upload-button"
+>
+    Run Data Quality Analysis →
+</a>
+            </span>
+            
+
+            <h3>
+                Data Quality Analysis
+            </h3>
+
+            <p>
+                After Upload Data is finalized,
+                Smart BI will analyze missing values,
+                duplicates, invalid values and outliers.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

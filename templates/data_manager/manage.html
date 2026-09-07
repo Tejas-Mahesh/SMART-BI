@@ -1,0 +1,644 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Data | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Manage Data
+{% endblock %}
+
+{% block content %}
+
+<div class="manage-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="manage-header">
+
+        <div>
+
+            <div class="data-eyebrow">
+                DATA MANAGEMENT / DATASETS
+            </div>
+
+            <h1>
+                Manage Your Business Data
+            </h1>
+
+            <p>
+                View, inspect, activate, download and manage
+                all datasets uploaded to Smart BI.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'upload_data' %}"
+            class="manage-upload-button"
+        >
+            + Upload Dataset
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
+
+    <div class="manage-summary-grid">
+
+        <div class="manage-summary-card">
+
+            <div class="manage-summary-icon">
+                ▦
+            </div>
+
+            <div>
+                <span>Total Datasets</span>
+                <strong>{{ summary.total }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="manage-summary-card">
+
+            <div class="manage-summary-icon">
+                ✓
+            </div>
+
+            <div>
+                <span>Active Datasets</span>
+                <strong>{{ summary.active }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="manage-summary-card">
+
+            <div class="manage-summary-icon">
+                ◌
+            </div>
+
+            <div>
+                <span>Inactive Datasets</span>
+                <strong>{{ summary.inactive }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="manage-summary-card">
+
+            <div class="manage-summary-icon">
+                #
+            </div>
+
+            <div>
+                <span>Total Rows</span>
+                <strong>{{ summary.total_rows }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTER BAR
+    ====================================================== -->
+
+    <div class="manage-filter-card">
+
+        <form
+            method="GET"
+            class="manage-filter-form"
+        >
+
+            <div class="manage-search-box">
+
+                <span class="manage-search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search datasets..."
+                >
+
+            </div>
+
+
+            <select
+                name="type"
+                class="manage-filter-select"
+            >
+
+                <option value="">
+                    All Dataset Types
+                </option>
+
+                {% for value, label in dataset_types %}
+
+                <option
+                    value="{{ value }}"
+                    {% if dataset_type == value %}
+                        selected
+                    {% endif %}
+                >
+                    {{ label }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <select
+                name="status"
+                class="manage-filter-select"
+            >
+
+                <option value="">
+                    All Status
+                </option>
+
+                <option
+                    value="active"
+                    {% if status == "active" %}
+                        selected
+                    {% endif %}
+                >
+                    Active
+                </option>
+
+                <option
+                    value="inactive"
+                    {% if status == "inactive" %}
+                        selected
+                    {% endif %}
+                >
+                    Inactive
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="manage-filter-button"
+            >
+                Apply Filters
+            </button>
+
+
+            {% if search or dataset_type or status %}
+
+            <a
+                href="{% url 'manage_data' %}"
+                class="manage-clear-button"
+            >
+                Clear
+            </a>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         DATASETS
+    ====================================================== -->
+
+    <div class="manage-datasets-card">
+
+        <div class="manage-section-header">
+
+            <div>
+
+                <span>
+                    DATA LIBRARY
+                </span>
+
+                <h2>
+                    Uploaded Datasets
+                </h2>
+
+            </div>
+
+            <div class="dataset-result-count">
+                {{ datasets|length }} result(s)
+            </div>
+
+        </div>
+
+
+        {% if datasets %}
+
+        <div class="dataset-table-wrapper">
+
+            <table class="dataset-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Dataset
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Size
+                        </th>
+
+                        <th>
+                            Rows
+                        </th>
+
+                        <th>
+                            Columns
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Uploaded
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for dataset in datasets %}
+
+                    <tr>
+
+                        <!-- Dataset -->
+
+                        <td>
+
+                            <div class="dataset-name-cell">
+
+                                <div class="dataset-file-icon">
+                                    CSV
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ dataset.name }}
+                                    </strong>
+
+                                    <small>
+                                        ID #{{ dataset.id }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Type -->
+
+                        <td>
+
+                            <span class="dataset-type-badge">
+                                {{ dataset.get_dataset_type_display }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Size -->
+
+                        <td>
+
+                            {% widthratio dataset.file_size 1048576 1 %}
+                            MB
+
+                        </td>
+
+
+                        <!-- Rows -->
+
+                        <td>
+                            {{ dataset.row_count }}
+                        </td>
+
+
+                        <!-- Columns -->
+
+                        <td>
+                            {{ dataset.column_count }}
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if dataset.is_active %}
+
+                            <span class="dataset-status active">
+                                <span></span>
+                                Active
+                            </span>
+
+                            {% else %}
+
+                            <span class="dataset-status inactive">
+                                <span></span>
+                                Inactive
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Date -->
+
+                        <td>
+
+                            <div class="dataset-date">
+
+                                {{ dataset.uploaded_at|date:"d M Y" }}
+
+                                <small>
+                                    {{ dataset.uploaded_at|date:"H:i" }}
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="dataset-actions">
+
+                                <a
+                                    href="{% url 'dataset_details' dataset.id %}"
+                                    class="dataset-action"
+                                    title="View details"
+                                >
+                                    View
+                                </a>
+
+
+                                <a
+                                    href="{% url 'data_preview' dataset.id %}"
+                                    class="dataset-action"
+                                    title="Preview"
+                                >
+                                    Preview
+                                </a>
+
+
+                                <a
+                                    href="{% url 'data_quality' dataset.id %}"
+                                    class="dataset-action"
+                                    title="Data quality"
+                                >
+                                    Quality
+                                </a>
+
+
+                                <a
+                                    href="{% url 'download_dataset' dataset.id %}"
+                                    class="dataset-action"
+                                    title="Download"
+                                >
+                                    ↓
+                                </a>
+
+
+                                {% if dataset.is_active %}
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'deactivate_dataset' dataset.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="dataset-action dataset-action-warning"
+                                        title="Deactivate"
+                                    >
+                                        Pause
+                                    </button>
+
+                                </form>
+
+                                {% else %}
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'activate_dataset' dataset.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="dataset-action dataset-action-success"
+                                        title="Activate"
+                                    >
+                                        Activate
+                                    </button>
+
+                                </form>
+
+                                {% endif %}
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'delete_dataset' dataset.id %}"
+                                    class="delete-form"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="dataset-action dataset-action-danger"
+                                        title="Delete"
+                                        onclick="return confirm('Are you sure you want to delete this dataset? This action cannot be undone.')"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div class="manage-empty-state">
+
+            <div class="manage-empty-icon">
+                ▦
+            </div>
+
+            <h3>
+                No datasets found
+            </h3>
+
+            {% if search or dataset_type or status %}
+
+            <p>
+                No dataset matches your current filters.
+                Try changing the search or filters.
+            </p>
+
+            <a
+                href="{% url 'manage_data' %}"
+                class="manage-empty-button"
+            >
+                Clear Filters
+            </a>
+
+            {% else %}
+
+            <p>
+                Upload your first business dataset to start
+                analyzing your organization with Smart BI.
+            </p>
+
+            <a
+                href="{% url 'upload_data' %}"
+                class="manage-empty-button"
+            >
+                Upload First Dataset
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =====================================================
+         INFORMATION
+    ====================================================== -->
+
+    <div class="manage-info-grid">
+
+        <div class="manage-info-card">
+
+            <div class="manage-info-number">
+                01
+            </div>
+
+            <div>
+
+                <h3>
+                    Upload
+                </h3>
+
+                <p>
+                    Add CSV or Excel business datasets to your
+                    Smart BI workspace.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="manage-info-card">
+
+            <div class="manage-info-number">
+                02
+            </div>
+
+            <div>
+
+                <h3>
+                    Validate
+                </h3>
+
+                <p>
+                    Review quality, missing values, duplicates,
+                    invalid values and outliers.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="manage-info-card">
+
+            <div class="manage-info-number">
+                03
+            </div>
+
+            <div>
+
+                <h3>
+                    Analyze
+                </h3>
+
+                <p>
+                    Clean datasets will become the foundation
+                    for Business Intelligence and ML analytics.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

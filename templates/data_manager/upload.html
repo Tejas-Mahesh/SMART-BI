@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}
+Smart BI | Upload Data
+{% endblock %}
+
+{% block page_heading %}
+Upload Data
+{% endblock %}
+
+{% block content %}
+
+<div class="data-page">
+
+    <div class="data-header">
+
+        <div>
+            <div class="data-eyebrow">
+                DATA MANAGEMENT
+            </div>
+
+            <h2>
+                Upload Business Data
+            </h2>
+
+            <p>
+                Import your business datasets into
+                Smart BI for analysis and intelligence.
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if messages %}
+
+        <div class="message-container">
+
+            {% for message in messages %}
+
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="upload-layout">
+
+
+        <!-- UPLOAD CARD -->
+
+        <div class="upload-card">
+
+            <div class="card-header">
+
+                <div>
+                    <h3>
+                        Upload Dataset
+                    </h3>
+
+                    <p>
+                        CSV, XLSX and XLS files
+                    </p>
+                </div>
+
+                <div class="upload-icon">
+                    ↑
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="upload-form"
+            >
+
+                {% csrf_token %}
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="form-error">
+                        {{ form.non_field_errors }}
+                    </div>
+
+                {% endif %}
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="{{ form.name.id_for_label }}">
+                        Dataset Name
+                    </label>
+
+                    {{ form.name }}
+
+                    {% if form.name.errors %}
+
+                        <div class="field-error">
+                            {{ form.name.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- TYPE -->
+
+                <div class="form-group">
+
+                    <label for="{{ form.dataset_type.id_for_label }}">
+                        Dataset Type
+                    </label>
+
+                    {{ form.dataset_type }}
+
+                    {% if form.dataset_type.errors %}
+
+                        <div class="field-error">
+                            {{ form.dataset_type.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- FILE -->
+
+                <div class="form-group">
+
+                    <label>
+                        Dataset File
+                    </label>
+
+
+                    <div class="drop-zone">
+
+                        <div class="drop-icon">
+                            ☁
+                        </div>
+
+                        <h4>
+                            Select your business data
+                        </h4>
+
+                        <p>
+                            CSV, XLSX or XLS
+                            <br>
+                            Maximum size: 50 MB
+                        </p>
+
+                        <label
+                            for="{{ form.file.id_for_label }}"
+                            class="browse-button"
+                        >
+                            Browse File
+                        </label>
+
+                        {{ form.file }}
+
+                        <div
+                            id="selected-file"
+                            class="selected-file"
+                        >
+                        </div>
+
+                    </div>
+
+
+                    {% if form.file.errors %}
+
+                        <div class="field-error">
+                            {{ form.file.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="upload-button"
+                >
+                    <span>Upload Dataset</span>
+                    <span>→</span>
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="upload-info">
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h4>
+                        Automatic Detection
+                    </h4>
+
+                    <p>
+                        Smart BI automatically detects
+                        rows, columns and basic data types.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    ◈
+                </div>
+
+                <div>
+                    <h4>
+                        Data Preview
+                    </h4>
+
+                    <p>
+                        Review your uploaded dataset
+                        before using it for analytics.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h4>
+                        Supported Data
+                    </h4>
+
+                    <p>
+                        Customers, Products, Orders,
+                        Returns, Marketing and Expenses.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="security-card">
+
+                <div class="security-icon">
+                    🔒
+                </div>
+
+                <div>
+                    <h4>
+                        Data Protection
+                    </h4>
+
+                    <p>
+                        Your original uploaded file is
+                        preserved and will not be overwritten
+                        during data processing.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const fileInput =
+            document.getElementById(
+                "{{ form.file.id_for_label }}"
+            );
+
+        const selectedFile =
+            document.getElementById(
+                "selected-file"
+            );
+
+        if (!fileInput) {
+            return;
+        }
+
+        fileInput.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    fileInput.files &&
+                    fileInput.files.length > 0
+                ) {
+
+                    const file =
+                        fileInput.files[0];
+
+                    const sizeMB =
+                        (
+                            file.size /
+                            (1024 * 1024)
+                        ).toFixed(2);
+
+                    selectedFile.innerHTML =
+                        `
+                        <strong>
+                            ${file.name}
+                        </strong>
+                        <span>
+                            ${sizeMB} MB
+                        </span>
+                        `;
+
+                } else {
+
+                    selectedFile.innerHTML = "";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}
