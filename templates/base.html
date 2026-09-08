@@ -16,9 +16,19 @@
 
     <link rel="stylesheet"
           href="{% static 'css/main.css' %}">
+
     <link rel="stylesheet"
           href="{% static 'css/data_manager.css' %}">
-
+    <link rel="stylesheet"
+          href="{% static 'css/analytics.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/product.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/regional.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/marketing.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'css/return_analysis.css' %}">
     {% block extra_css %}
     {% endblock %}
 </head>
@@ -80,40 +90,39 @@
 
 
                 <div class="nav-section">
+<div class="nav-section-title">
+    ANALYTICS
+</div>
 
-                    <div class="nav-title">
-                        ANALYTICS
-                    </div>
+<a href="{% url 'business_overview' %}" class="nav-link">
+    <span class="nav-icon">◈</span>
+    <span>Business Overview</span>
+</a>
 
-                    <a href="#">
-                        <span>◈</span>
-                        <span>Business Overview</span>
-                    </a>
+<a href="{% url 'customer_intelligence' %}" class="nav-link">
+    <span class="nav-icon">◎</span>
+    <span>Customer Intelligence</span>
+</a>
 
-                    <a href="#">
-                        <span>♙</span>
-                        <span>Customer Intelligence</span>
-                    </a>
+<a href="{% url 'product_intelligence' %}" class="nav-link">
+    <span class="nav-icon">▣</span>
+    <span>Product Intelligence</span>
+</a>
 
-                    <a href="#">
-                        <span>▣</span>
-                        <span>Product Intelligence</span>
-                    </a>
+<a href="{% url 'regional_analysis' %}" class="nav-link">
+    <span class="nav-icon">⌖</span>
+    <span>Regional Analysis</span>
+</a>
 
-                    <a href="#">
-                        <span>◎</span>
-                        <span>Regional Intelligence</span>
-                    </a>
+<a href="{% url 'marketing_analysis' %}" class="nav-link">
+    <span class="nav-icon">◉</span>
+    <span>Marketing Analysis</span>
+</a>
 
-                    <a href="#">
-                        <span>↗</span>
-                        <span>Marketing Analysis</span>
-                    </a>
-
-                    <a href="#">
-                        <span>↩</span>
-                        <span>Returns Analysis</span>
-                    </a>
+<a href="{% url 'returns_analysis' %}" class="nav-link">
+    <span class="nav-icon">↩</span>
+    <span>Returns Analysis</span>
+</a>
 
                 </div>
 

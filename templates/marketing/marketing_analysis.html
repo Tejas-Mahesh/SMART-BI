@@ -1,0 +1,1754 @@
+{% extends "base.html" %}
+
+{% block title %}
+Marketing Analysis | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Marketing Analysis
+{% endblock %}
+
+{% block content %}
+
+<div class="marketing-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="marketing-hero">
+
+        <div class="marketing-hero-content">
+
+            <div class="marketing-eyebrow">
+                MARKETING INTELLIGENCE
+            </div>
+
+            <h1>
+                Marketing Performance
+                <span>Intelligence</span>
+            </h1>
+
+            <p>
+                Understand marketing spend, campaign efficiency,
+                customer acquisition and return on investment.
+            </p>
+
+            <div class="marketing-dataset">
+
+                <span class="dataset-dot"></span>
+
+                Active Dataset:
+                <strong>
+                    {{ dataset.name }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        <div class="marketing-hero-icon">
+            ◉
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <section class="marketing-kpi-grid">
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                ₹
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    Total Marketing Spend
+                </span>
+
+                <strong>
+                    ₹{{ metrics.total_spend|floatformat:2 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                ↗
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    Marketing Revenue
+                </span>
+
+                <strong>
+                    ₹{{ metrics.total_revenue|floatformat:2 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                ◆
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    Marketing Profit
+                </span>
+
+                <strong>
+                    ₹{{ metrics.total_profit|floatformat:2 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                %
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    ROI
+                </span>
+
+                <strong>
+                    {{ metrics.roi|floatformat:2 }}%
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                ×
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    ROAS
+                </span>
+
+                <strong>
+                    {{ metrics.roas|floatformat:2 }}x
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-kpi-card">
+
+            <div class="marketing-kpi-icon">
+                $
+            </div>
+
+            <div class="marketing-kpi-content">
+
+                <span class="marketing-kpi-label">
+                    Customer Acquisition Cost
+                </span>
+
+                <strong>
+                    ₹{{ metrics.cac|floatformat:2 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SECONDARY METRICS
+    ====================================================== -->
+
+    <section class="marketing-secondary-grid">
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Click Through Rate
+            </span>
+
+            <strong>
+                {{ metrics.ctr|floatformat:2 }}%
+            </strong>
+
+        </div>
+
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Conversion Rate
+            </span>
+
+            <strong>
+                {{ metrics.conversion_rate|floatformat:2 }}%
+            </strong>
+
+        </div>
+
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Cost Per Click
+            </span>
+
+            <strong>
+                ₹{{ metrics.cpc|floatformat:2 }}
+            </strong>
+
+        </div>
+
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Conversions
+            </span>
+
+            <strong>
+                {{ metrics.total_conversions }}
+            </strong>
+
+        </div>
+
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Leads
+            </span>
+
+            <strong>
+                {{ metrics.total_leads }}
+            </strong>
+
+        </div>
+
+
+        <div class="marketing-mini-card">
+
+            <span>
+                Customers
+            </span>
+
+            <strong>
+                {{ metrics.total_customers }}
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MARKETING TREND
+    ====================================================== -->
+
+    <section class="marketing-panel">
+
+        <div class="marketing-panel-header">
+
+            <div>
+
+                <span class="marketing-section-label">
+                    PERFORMANCE TREND
+                </span>
+
+                <h2>
+                    Marketing Spend vs Revenue
+                </h2>
+
+            </div>
+
+            <div class="marketing-panel-badge">
+                Monthly Analysis
+            </div>
+
+        </div>
+
+        <div class="marketing-chart-large">
+
+            <canvas id="marketingTrendChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHANNEL CHARTS
+    ====================================================== -->
+
+    <section class="marketing-chart-grid">
+
+
+        <div class="marketing-panel">
+
+            <div class="marketing-panel-header">
+
+                <div>
+
+                    <span class="marketing-section-label">
+                        CHANNEL ANALYSIS
+                    </span>
+
+                    <h2>
+                        Revenue by Channel
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="marketing-chart">
+
+                <canvas id="channelRevenueChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-panel">
+
+            <div class="marketing-panel-header">
+
+                <div>
+
+                    <span class="marketing-section-label">
+                        EFFICIENCY
+                    </span>
+
+                    <h2>
+                        ROAS by Channel
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="marketing-chart">
+
+                <canvas id="channelRoasChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         SPEND VS REVENUE
+    ====================================================== -->
+
+    <section class="marketing-panel">
+
+        <div class="marketing-panel-header">
+
+            <div>
+
+                <span class="marketing-section-label">
+                    INVESTMENT EFFICIENCY
+                </span>
+
+                <h2>
+                    Marketing Spend vs Revenue
+                </h2>
+
+                <p>
+                    Compare investment level against generated revenue
+                    for every marketing channel.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="marketing-chart-large">
+
+            <canvas id="spendRevenueChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TOP CAMPAIGNS
+    ====================================================== -->
+
+    <section class="marketing-chart-grid">
+
+
+        <div class="marketing-panel">
+
+            <div class="marketing-panel-header">
+
+                <div>
+
+                    <span class="marketing-section-label">
+                        CAMPAIGN PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Top Campaigns by Revenue
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="marketing-chart">
+
+                <canvas id="campaignRevenueChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-panel">
+
+            <div class="marketing-panel-header">
+
+                <div>
+
+                    <span class="marketing-section-label">
+                        RETURN ON INVESTMENT
+                    </span>
+
+                    <h2>
+                        Campaign ROI Ranking
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="marketing-chart">
+
+                <canvas id="campaignRoiChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         PERFORMANCE CARDS
+    ====================================================== -->
+
+    <section class="marketing-performance-grid">
+
+
+        <div class="marketing-performance-card">
+
+            <div class="performance-card-title">
+                <span class="performance-icon">
+                    ★
+                </span>
+
+                <div>
+
+                    <span>
+                        BEST CHANNEL
+                    </span>
+
+                    <h3>
+                        {% if top_roas_channels %}
+                            {{ top_roas_channels.0.channel }}
+                        {% else %}
+                            No Data
+                        {% endif %}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            {% if top_roas_channels %}
+
+                <div class="performance-value">
+                    {{ top_roas_channels.0.roas|floatformat:2 }}x
+                </div>
+
+                <p>
+                    Highest return on advertising spend.
+                </p>
+
+            {% else %}
+
+                <p>
+                    Channel information is unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="marketing-performance-card">
+
+            <div class="performance-card-title">
+
+                <span class="performance-icon">
+                    ↗
+                </span>
+
+                <div>
+
+                    <span>
+                        TOP CAMPAIGN
+                    </span>
+
+                    <h3>
+                        {% if top_roi_campaigns %}
+                            {{ top_roi_campaigns.0.campaign }}
+                        {% else %}
+                            No Data
+                        {% endif %}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            {% if top_roi_campaigns %}
+
+                <div class="performance-value">
+                    {{ top_roi_campaigns.0.roi|floatformat:2 }}%
+                </div>
+
+                <p>
+                    Highest campaign return on investment.
+                </p>
+
+            {% else %}
+
+                <p>
+                    Campaign information is unavailable.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="marketing-performance-card">
+
+            <div class="performance-card-title">
+
+                <span class="performance-icon">
+                    ⚠
+                </span>
+
+                <div>
+
+                    <span>
+                        UNDERPERFORMING
+                    </span>
+
+                    <h3>
+                        Campaign Monitor
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="performance-value">
+
+                {% widthratio campaign_data|length 1 1 %}
+
+            </div>
+
+            <p>
+                Campaigns are evaluated using ROI and ROAS.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         CHANNEL PERFORMANCE TABLE
+    ====================================================== -->
+
+    <section class="marketing-panel">
+
+        <div class="marketing-panel-header">
+
+            <div>
+
+                <span class="marketing-section-label">
+                    CHANNEL INTELLIGENCE
+                </span>
+
+                <h2>
+                    Channel Performance
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-table-wrapper">
+
+            <table class="marketing-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Channel
+                        </th>
+
+                        <th>
+                            Spend
+                        </th>
+
+                        <th>
+                            Revenue
+                        </th>
+
+                        <th>
+                            Profit
+                        </th>
+
+                        <th>
+                            Conversions
+                        </th>
+
+                        <th>
+                            CAC
+                        </th>
+
+                        <th>
+                            ROAS
+                        </th>
+
+                        <th>
+                            ROI
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in channel_data %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.channel }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ₹{{ item.spend|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.revenue|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.profit|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ item.conversions }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.cac|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ item.roas|floatformat:2 }}x
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item.roi|floatformat:2 }}%
+                        </td>
+
+                        <td>
+
+                            {% if item.classification == "High Performing" %}
+
+                                <span class="marketing-status positive">
+                                    High Performing
+                                </span>
+
+                            {% elif item.classification == "Needs Attention" %}
+
+                                <span class="marketing-status warning">
+                                    Needs Attention
+                                </span>
+
+                            {% else %}
+
+                                <span class="marketing-status stable">
+                                    Stable
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="9" class="marketing-empty">
+
+                            No channel data detected.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CAMPAIGN PERFORMANCE TABLE
+    ====================================================== -->
+
+    <section class="marketing-panel">
+
+        <div class="marketing-panel-header">
+
+            <div>
+
+                <span class="marketing-section-label">
+                    CAMPAIGN INTELLIGENCE
+                </span>
+
+                <h2>
+                    Campaign Performance
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-table-wrapper">
+
+            <table class="marketing-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Campaign
+                        </th>
+
+                        <th>
+                            Spend
+                        </th>
+
+                        <th>
+                            Revenue
+                        </th>
+
+                        <th>
+                            Profit
+                        </th>
+
+                        <th>
+                            Conversions
+                        </th>
+
+                        <th>
+                            ROAS
+                        </th>
+
+                        <th>
+                            ROI
+                        </th>
+
+                        <th>
+                            Conversion Rate
+                        </th>
+
+                        <th>
+                            Classification
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in campaign_data %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.campaign }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ₹{{ item.spend|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.revenue|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ item.profit|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ item.conversions }}
+                        </td>
+
+                        <td>
+                            {{ item.roas|floatformat:2 }}x
+                        </td>
+
+                        <td>
+                            {{ item.roi|floatformat:2 }}%
+                        </td>
+
+                        <td>
+                            {{ item.conversion_rate|floatformat:2 }}%
+                        </td>
+
+                        <td>
+
+                            {% if item.classification == "High Performer" %}
+
+                                <span class="marketing-status positive">
+                                    High Performer
+                                </span>
+
+                            {% elif item.classification == "Underperforming" %}
+
+                                <span class="marketing-status warning">
+                                    Underperforming
+                                </span>
+
+                            {% elif item.classification == "Efficient / Low Scale" %}
+
+                                <span class="marketing-status opportunity">
+                                    Efficient / Low Scale
+                                </span>
+
+                            {% else %}
+
+                                <span class="marketing-status stable">
+                                    Average
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="9" class="marketing-empty">
+
+                            No campaign data detected.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BUSINESS INSIGHTS
+    ====================================================== -->
+
+    <section class="marketing-panel">
+
+        <div class="marketing-panel-header">
+
+            <div>
+
+                <span class="marketing-section-label">
+                    DECISION INTELLIGENCE
+                </span>
+
+                <h2>
+                    Marketing Insights
+                </h2>
+
+                <p>
+                    Automatically generated observations from
+                    marketing performance data.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="marketing-insights-grid">
+
+            {% for insight in insights %}
+
+            <div class="marketing-insight-card {{ insight.type }}">
+
+                <div class="marketing-insight-icon">
+
+                    {% if insight.type == "positive" %}
+                        ✓
+                    {% elif insight.type == "warning" %}
+                        !
+                    {% else %}
+                        ↗
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <span class="marketing-insight-type">
+                        {{ insight.type|upper }}
+                    </span>
+
+                    <h3>
+                        {{ insight.title }}
+                    </h3>
+
+                    <p>
+                        {{ insight.message }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="marketing-empty-insight">
+
+                No automatic marketing insights are available.
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         METHODOLOGY
+    ====================================================== -->
+
+    <section class="marketing-methodology">
+
+        <div class="methodology-icon">
+            Σ
+        </div>
+
+        <div>
+
+            <span>
+                ANALYTICAL METHODOLOGY
+            </span>
+
+            <h2>
+                How Marketing Intelligence Works
+            </h2>
+
+            <p>
+                Smart BI evaluates marketing investment using
+                spend, revenue, conversions, clicks, impressions
+                and customer acquisition data. ROI measures the
+                return relative to marketing investment, while
+                ROAS measures revenue generated for every unit of
+                advertising spend. Campaigns and channels are
+                classified using relative performance benchmarks.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /*
+        ========================================================
+        DATA FROM DJANGO
+        ========================================================
+        */
+
+        const trendData =
+            {{ trend_data|safe }};
+
+        const channelData =
+            {{ channel_data|safe }};
+
+        const campaignData =
+            {{ campaign_data|safe }};
+
+
+        /*
+        ========================================================
+        COMMON SETTINGS
+        ========================================================
+        */
+
+        Chart.defaults.font.family =
+            "Inter, Arial, sans-serif";
+
+        Chart.defaults.color =
+            "#9ca3af";
+
+        Chart.defaults.borderColor =
+            "rgba(255,255,255,0.07)";
+
+
+        /*
+        ========================================================
+        MARKETING TREND
+        ========================================================
+        */
+
+        const trendCanvas =
+            document.getElementById(
+                "marketingTrendChart"
+            );
+
+        if (
+            trendCanvas &&
+            trendData.length
+        ) {
+
+            new Chart(
+                trendCanvas,
+                {
+
+                    type: "line",
+
+                    data: {
+
+                        labels:
+                            trendData.map(
+                                item =>
+                                    item.period
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Marketing Spend",
+
+                                data:
+                                    trendData.map(
+                                        item =>
+                                            item.spend
+                                    ),
+
+                                borderWidth: 3,
+
+                                tension: 0.35,
+
+                                fill: false,
+
+                            },
+
+                            {
+
+                                label:
+                                    "Revenue",
+
+                                data:
+                                    trendData.map(
+                                        item =>
+                                            item.revenue
+                                    ),
+
+                                borderWidth: 3,
+
+                                tension: 0.35,
+
+                                fill: false,
+
+                            },
+
+                            {
+
+                                label:
+                                    "Profit",
+
+                                data:
+                                    trendData.map(
+                                        item =>
+                                            item.profit
+                                    ),
+
+                                borderWidth: 2,
+
+                                tension: 0.35,
+
+                                fill: false,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+
+                            mode: "index",
+
+                            intersect: false
+
+                        },
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "top",
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+
+                                }
+
+                            },
+
+                            y: {
+
+                                beginAtZero: true
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        ========================================================
+        CHANNEL REVENUE
+        ========================================================
+        */
+
+        const channelRevenueCanvas =
+            document.getElementById(
+                "channelRevenueChart"
+            );
+
+        if (
+            channelRevenueCanvas &&
+            channelData.length
+        ) {
+
+            new Chart(
+                channelRevenueCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            channelData.map(
+                                item =>
+                                    item.channel
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Revenue",
+
+                                data:
+                                    channelData.map(
+                                        item =>
+                                            item.revenue
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: false
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true
+
+                            },
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        ========================================================
+        CHANNEL ROAS
+        ========================================================
+        */
+
+        const channelRoasCanvas =
+            document.getElementById(
+                "channelRoasChart"
+            );
+
+        if (
+            channelRoasCanvas &&
+            channelData.length
+        ) {
+
+            const sortedChannels =
+                [...channelData]
+                .sort(
+                    (a, b) =>
+                        b.roas - a.roas
+                )
+                .slice(0, 10);
+
+
+            new Chart(
+                channelRoasCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            sortedChannels.map(
+                                item =>
+                                    item.channel
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "ROAS",
+
+                                data:
+                                    sortedChannels.map(
+                                        item =>
+                                            item.roas
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: false
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        ========================================================
+        SPEND VS REVENUE
+        ========================================================
+        */
+
+        const spendRevenueCanvas =
+            document.getElementById(
+                "spendRevenueChart"
+            );
+
+        if (
+            spendRevenueCanvas &&
+            channelData.length
+        ) {
+
+            new Chart(
+                spendRevenueCanvas,
+                {
+
+                    type: "scatter",
+
+                    data: {
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Marketing Channels",
+
+                                data:
+                                    channelData.map(
+                                        item => ({
+
+                                            x:
+                                                item.spend,
+
+                                            y:
+                                                item.revenue,
+
+                                        })
+                                    ),
+
+                                pointRadius: 8,
+
+                                pointHoverRadius: 12,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (
+                                            context
+                                        ) {
+
+                                            const item =
+                                                channelData[
+                                                    context.dataIndex
+                                                ];
+
+                                            return (
+                                                item.channel
+                                                +
+                                                ": Spend ₹"
+                                                +
+                                                item.spend
+                                                +
+                                                " → Revenue ₹"
+                                                +
+                                                item.revenue
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true,
+
+                                title: {
+
+                                    display: true,
+
+                                    text:
+                                        "Marketing Spend"
+
+                                }
+
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                title: {
+
+                                    display: true,
+
+                                    text:
+                                        "Revenue"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        ========================================================
+        CAMPAIGN REVENUE
+        ========================================================
+        */
+
+        const campaignRevenueCanvas =
+            document.getElementById(
+                "campaignRevenueChart"
+            );
+
+        if (
+            campaignRevenueCanvas &&
+            campaignData.length
+        ) {
+
+            const topCampaigns =
+                [...campaignData]
+                .sort(
+                    (a, b) =>
+                        b.revenue - a.revenue
+                )
+                .slice(0, 10);
+
+
+            new Chart(
+                campaignRevenueCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            topCampaigns.map(
+                                item =>
+                                    item.campaign
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Revenue",
+
+                                data:
+                                    topCampaigns.map(
+                                        item =>
+                                            item.revenue
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        ========================================================
+        CAMPAIGN ROI
+        ========================================================
+        */
+
+        const campaignRoiCanvas =
+            document.getElementById(
+                "campaignRoiChart"
+            );
+
+        if (
+            campaignRoiCanvas &&
+            campaignData.length
+        ) {
+
+            const roiCampaigns =
+                [...campaignData]
+                .sort(
+                    (a, b) =>
+                        b.roi - a.roi
+                )
+                .slice(0, 10);
+
+
+            new Chart(
+                campaignRoiCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            roiCampaigns.map(
+                                item =>
+                                    item.campaign
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "ROI %",
+
+                                data:
+                                    roiCampaigns.map(
+                                        item =>
+                                            item.roi
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

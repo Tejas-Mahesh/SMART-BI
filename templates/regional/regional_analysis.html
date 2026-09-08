@@ -1,0 +1,1849 @@
+{% extends "base.html" %}
+
+{% block title %}
+Regional Analysis | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Regional Analysis
+{% endblock %}
+
+{% block content %}
+
+<div class="regional-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="regional-hero">
+
+        <div class="regional-hero-content">
+
+            <div class="regional-eyebrow">
+                REGIONAL INTELLIGENCE
+            </div>
+
+            <h1>
+                Regional Performance
+                <span>Intelligence</span>
+            </h1>
+
+            <p>
+                Understand which regions drive revenue, profit,
+                customers and growth — and identify markets
+                that require attention.
+            </p>
+
+            <div class="regional-dataset">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Active Dataset:
+                    <strong>{{ dataset.name }}</strong>
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="regional-hero-icon">
+            <div class="globe-ring">
+                <span>⌖</span>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <section class="regional-kpi-grid">
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                ⌖
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Total Regions</span>
+
+                <strong>
+                    {{ metrics.total_regions|default:"0" }}
+                </strong>
+
+                <small>
+                    Active markets
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                ₹
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Total Revenue</span>
+
+                <strong>
+                    ₹{{ metrics.total_revenue|default:"0"|floatformat:0 }}
+                </strong>
+
+                <small>
+                    Across all regions
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                ◆
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Total Profit</span>
+
+                <strong>
+                    ₹{{ metrics.total_profit|default:"0"|floatformat:0 }}
+                </strong>
+
+                <small>
+                    Regional contribution
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                #
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Total Orders</span>
+
+                <strong>
+                    {{ metrics.total_orders|default:"0" }}
+                </strong>
+
+                <small>
+                    Regional orders
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                ◎
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Total Customers</span>
+
+                <strong>
+                    {{ metrics.total_customers|default:"0" }}
+                </strong>
+
+                <small>
+                    Across regions
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="regional-kpi-card">
+
+            <div class="regional-kpi-icon">
+                %
+            </div>
+
+            <div class="regional-kpi-content">
+
+                <span>Avg. Profit Margin</span>
+
+                <strong>
+                    {{ metrics.average_profit_margin|default:"0"|floatformat:2 }}%
+                </strong>
+
+                <small>
+                    Regional average
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHART ROW 1
+    ====================================================== -->
+
+    <section class="regional-chart-grid">
+
+        <!-- Revenue -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        REVENUE
+                    </span>
+
+                    <h2>
+                        Revenue by Region
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    ₹
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container">
+
+                <canvas id="revenueRegionChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- Profit -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        PROFITABILITY
+                    </span>
+
+                    <h2>
+                        Profit by Region
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    ◆
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container">
+
+                <canvas id="profitRegionChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHART ROW 2
+    ====================================================== -->
+
+    <section class="regional-chart-grid">
+
+        <!-- Orders -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        ORDERS
+                    </span>
+
+                    <h2>
+                        Orders by Region
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    #
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container">
+
+                <canvas id="ordersRegionChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- Revenue Share -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        MARKET SHARE
+                    </span>
+
+                    <h2>
+                        Regional Revenue Share
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    ◉
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container regional-donut-container">
+
+                <canvas id="revenueShareChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         GROWTH + PERFORMANCE
+    ====================================================== -->
+
+    <section class="regional-chart-grid">
+
+        <!-- Growth -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        GROWTH ANALYTICS
+                    </span>
+
+                    <h2>
+                        Regional Growth
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    ↗
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container">
+
+                <canvas id="growthRegionChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- Performance Score -->
+
+        <div class="regional-panel regional-chart-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Regional Performance Score
+                    </h2>
+
+                </div>
+
+                <span class="panel-icon">
+                    ★
+                </span>
+
+            </div>
+
+            <div class="regional-chart-container">
+
+                <canvas id="performanceRegionChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         REVENUE VS PROFIT MATRIX
+    ====================================================== -->
+
+    <section class="regional-panel regional-matrix-panel">
+
+        <div class="regional-panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    STRATEGIC POSITIONING
+                </span>
+
+                <h2>
+                    Revenue vs Profit Matrix
+                </h2>
+
+                <p>
+                    Identify high-value regions and markets
+                    requiring strategic improvement.
+                </p>
+
+            </div>
+
+            <span class="panel-icon">
+                ⬡
+            </span>
+
+        </div>
+
+        <div class="regional-matrix-grid">
+
+            {% for item in matrix %}
+
+                <div class="regional-matrix-card">
+
+                    <div class="matrix-region">
+                        {{ item.region }}
+                    </div>
+
+                    <div class="matrix-values">
+
+                        <div>
+                            <span>Revenue</span>
+                            <strong>
+                                ₹{{ item.revenue|floatformat:0 }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Profit</span>
+                            <strong>
+                                ₹{{ item.profit|floatformat:0 }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="matrix-quadrant
+                        {% if 'High Revenue / High Profit' in item.quadrant %}
+                            matrix-excellent
+                        {% elif 'High Revenue / Low Profit' in item.quadrant %}
+                            matrix-warning
+                        {% elif 'Low Revenue / High Profit' in item.quadrant %}
+                            matrix-opportunity
+                        {% else %}
+                            matrix-danger
+                        {% endif %}
+                    ">
+
+                        {{ item.quadrant }}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="regional-empty">
+                    No regional matrix data available.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TOP REGIONS
+    ====================================================== -->
+
+    <section class="regional-two-column">
+
+        <!-- Top Revenue -->
+
+        <div class="regional-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        LEADING MARKETS
+                    </span>
+
+                    <h2>
+                        Top Revenue Regions
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="regional-ranking-list">
+
+                {% for region in top_revenue_regions %}
+
+                    <div class="regional-ranking-item">
+
+                        <div class="ranking-number">
+                            {{ forloop.counter }}
+                        </div>
+
+                        <div class="ranking-info">
+
+                            <strong>
+                                {{ region.region }}
+                            </strong>
+
+                            <span>
+                                {{ region.orders }} orders
+                            </span>
+
+                        </div>
+
+                        <div class="ranking-value">
+
+                            <strong>
+                                ₹{{ region.revenue|floatformat:0 }}
+                            </strong>
+
+                            <small>
+                                {{ region.margin|floatformat:2 }}% margin
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="regional-empty">
+                        No revenue data available.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Top Profit -->
+
+        <div class="regional-panel">
+
+            <div class="regional-panel-header">
+
+                <div>
+
+                    <span class="panel-label">
+                        PROFIT LEADERS
+                    </span>
+
+                    <h2>
+                        Top Profit Regions
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="regional-ranking-list">
+
+                {% for region in top_profit_regions %}
+
+                    <div class="regional-ranking-item">
+
+                        <div class="ranking-number">
+                            {{ forloop.counter }}
+                        </div>
+
+                        <div class="ranking-info">
+
+                            <strong>
+                                {{ region.region }}
+                            </strong>
+
+                            <span>
+                                {{ region.orders }} orders
+                            </span>
+
+                        </div>
+
+                        <div class="ranking-value">
+
+                            <strong>
+                                ₹{{ region.profit|floatformat:0 }}
+                            </strong>
+
+                            <small>
+                                {{ region.margin|floatformat:2 }}% margin
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="regional-empty">
+                        No profit data available.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PERFORMANCE TABLE
+    ====================================================== -->
+
+    <section class="regional-panel regional-table-panel">
+
+        <div class="regional-panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    REGIONAL SCORECARD
+                </span>
+
+                <h2>
+                    Regional Performance Ranking
+                </h2>
+
+                <p>
+                    Compare regions across revenue, profit,
+                    orders, customers, margins and returns.
+                </p>
+
+            </div>
+
+            <span class="panel-icon">
+                ☷
+            </span>
+
+        </div>
+
+        <div class="regional-table-wrapper">
+
+            <table class="regional-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Rank</th>
+
+                        <th>Region</th>
+
+                        <th>Revenue</th>
+
+                        <th>Profit</th>
+
+                        <th>Orders</th>
+
+                        <th>Customers</th>
+
+                        <th>Margin</th>
+
+                        <th>Return Rate</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for region in ranking %}
+
+                        <tr>
+
+                            <td>
+
+                                <span class="rank-badge">
+                                    #{{ region.rank }}
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    {{ region.region }}
+                                </strong>
+
+                            </td>
+
+                            <td>
+                                ₹{{ region.revenue|floatformat:0 }}
+                            </td>
+
+                            <td>
+                                ₹{{ region.profit|floatformat:0 }}
+                            </td>
+
+                            <td>
+                                {{ region.orders }}
+                            </td>
+
+                            <td>
+                                {{ region.customers }}
+                            </td>
+
+                            <td>
+
+                                <span class="margin-value">
+                                    {{ region.margin|floatformat:2 }}%
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="
+                                    return-value
+                                    {% if region.return_rate >= 15 %}
+                                        return-high
+                                    {% elif region.return_rate >= 8 %}
+                                        return-medium
+                                    {% else %}
+                                        return-low
+                                    {% endif %}
+                                ">
+
+                                    {{ region.return_rate|floatformat:2 }}%
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="8" class="table-empty">
+                                No regional data available.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         GROWTH TABLE
+    ====================================================== -->
+
+    <section class="regional-panel regional-table-panel">
+
+        <div class="regional-panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    MOMENTUM
+                </span>
+
+                <h2>
+                    Regional Growth Analysis
+                </h2>
+
+                <p>
+                    Comparison between the earlier and later
+                    periods available in the dataset.
+                </p>
+
+            </div>
+
+            <span class="panel-icon">
+                ↗
+            </span>
+
+        </div>
+
+        <div class="regional-table-wrapper">
+
+            <table class="regional-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Region</th>
+
+                        <th>Previous Period</th>
+
+                        <th>Current Period</th>
+
+                        <th>Growth</th>
+
+                        <th>Direction</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in growth_data %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item.region }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ₹{{ item.previous_value|floatformat:0 }}
+                            </td>
+
+                            <td>
+                                ₹{{ item.current_value|floatformat:0 }}
+                            </td>
+
+                            <td>
+
+                                <span class="
+                                    growth-number
+                                    {% if item.growth >= 0 %}
+                                        growth-positive
+                                    {% else %}
+                                        growth-negative
+                                    {% endif %}
+                                ">
+
+                                    {% if item.growth >= 0 %}
+                                        +{{ item.growth|floatformat:2 }}%
+                                    {% else %}
+                                        {{ item.growth|floatformat:2 }}%
+                                    {% endif %}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {% if item.growth >= 0 %}
+
+                                    <span class="direction-badge direction-up">
+                                        ↗ Growing
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="direction-badge direction-down">
+                                        ↘ Declining
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="5" class="table-empty">
+                                Not enough date information to calculate growth.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BUSINESS INSIGHTS
+    ====================================================== -->
+
+    <section class="regional-panel regional-insights-panel">
+
+        <div class="regional-panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    AI-STYLE BUSINESS INSIGHTS
+                </span>
+
+                <h2>
+                    What the Regional Data Tells You
+                </h2>
+
+                <p>
+                    Automatically generated observations from
+                    the regional analytics engine.
+                </p>
+
+            </div>
+
+            <span class="panel-icon">
+                ✦
+            </span>
+
+        </div>
+
+
+        <div class="regional-insights-grid">
+
+            {% for insight in insights %}
+
+                <div class="regional-insight-card
+                    {% if insight.type == 'warning' %}
+                        insight-warning
+                    {% elif insight.type == 'positive' %}
+                        insight-positive
+                    {% else %}
+                        insight-opportunity
+                    {% endif %}
+                ">
+
+                    <div class="insight-icon">
+
+                        {% if insight.type == "warning" %}
+                            ⚠
+                        {% elif insight.type == "positive" %}
+                            ✓
+                        {% else %}
+                            ◆
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            {{ insight.type|upper }}
+                        </span>
+
+                        <h3>
+                            {{ insight.title }}
+                        </h3>
+
+                        <p>
+                            {{ insight.message }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="regional-empty">
+                    No automatic insights available.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DATA METHODOLOGY
+    ====================================================== -->
+
+    <section class="regional-methodology">
+
+        <div class="methodology-icon">
+            ⓘ
+        </div>
+
+        <div>
+
+            <strong>
+                How Regional Intelligence Works
+            </strong>
+
+            <p>
+                Smart BI groups business records by region and
+                calculates revenue, profit, orders, customers,
+                units, profit margin, average order value,
+                return rate and regional growth. Performance
+                scores combine revenue, profitability, margin
+                and return-rate signals to identify strong and
+                weak markets.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =====================================================
+           DATA FROM DJANGO
+        ====================================================== */
+
+        const revenueData = [
+            {% for item in top_revenue_regions %}
+            {
+                region: "{{ item.region|escapejs }}",
+                value: {{ item.revenue|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        const profitData = [
+            {% for item in top_profit_regions %}
+            {
+                region: "{{ item.region|escapejs }}",
+                value: {{ item.profit|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        const rankingData = [
+            {% for item in ranking %}
+            {
+                region: "{{ item.region|escapejs }}",
+                orders: {{ item.orders|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        const revenueShareData = [
+            {% for item in revenue_share %}
+            {
+                region: "{{ item.region|escapejs }}",
+                value: {{ item.share|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        const growthData = [
+            {% for item in growth_data %}
+            {
+                region: "{{ item.region|escapejs }}",
+                value: {{ item.growth|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        const performanceData = [
+            {% for item in performance_scores %}
+            {
+                region: "{{ item.region|escapejs }}",
+                value: {{ item.score|default:0 }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+
+        /* =====================================================
+           COMMON SETTINGS
+        ====================================================== */
+
+        Chart.defaults.font.family =
+            "'Inter', 'Segoe UI', sans-serif";
+
+        Chart.defaults.font.size = 12;
+
+        Chart.defaults.animation.duration = 900;
+
+
+        /* =====================================================
+           REVENUE CHART
+        ====================================================== */
+
+        const revenueCanvas =
+            document.getElementById(
+                "revenueRegionChart"
+            );
+
+        if (
+            revenueCanvas &&
+            revenueData.length
+        ) {
+
+            new Chart(
+                revenueCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            revenueData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Revenue",
+
+                                data:
+                                    revenueData.map(
+                                        item => item.value
+                                    ),
+
+                                borderRadius: 8,
+
+                                borderWidth: 0,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                " ₹"
+                                                +
+                                                Number(
+                                                    context.raw
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        function (value) {
+
+                                            return (
+                                                "₹"
+                                                +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           PROFIT CHART
+        ====================================================== */
+
+        const profitCanvas =
+            document.getElementById(
+                "profitRegionChart"
+            );
+
+        if (
+            profitCanvas &&
+            profitData.length
+        ) {
+
+            new Chart(
+                profitCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            profitData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Profit",
+
+                                data:
+                                    profitData.map(
+                                        item => item.value
+                                    ),
+
+                                borderRadius: 8,
+
+                                borderWidth: 0,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                " ₹"
+                                                +
+                                                Number(
+                                                    context.raw
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        function (value) {
+
+                                            return (
+                                                "₹"
+                                                +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           ORDERS CHART
+        ====================================================== */
+
+        const ordersCanvas =
+            document.getElementById(
+                "ordersRegionChart"
+            );
+
+        if (
+            ordersCanvas &&
+            rankingData.length
+        ) {
+
+            new Chart(
+                ordersCanvas,
+                {
+
+                    type: "line",
+
+                    data: {
+
+                        labels:
+                            rankingData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Orders",
+
+                                data:
+                                    rankingData.map(
+                                        item => item.orders
+                                    ),
+
+                                tension: 0.35,
+
+                                fill: true,
+
+                                pointRadius: 5,
+
+                                pointHoverRadius: 7,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           REVENUE SHARE
+        ====================================================== */
+
+        const shareCanvas =
+            document.getElementById(
+                "revenueShareChart"
+            );
+
+        if (
+            shareCanvas &&
+            revenueShareData.length
+        ) {
+
+            new Chart(
+                shareCanvas,
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels:
+                            revenueShareData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                data:
+                                    revenueShareData.map(
+                                        item => item.value
+                                    ),
+
+                                borderWidth: 2,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: "65%",
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "right",
+
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                context.label
+                                                +
+                                                ": "
+                                                +
+                                                Number(
+                                                    context.raw
+                                                ).toFixed(2)
+                                                +
+                                                "%"
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           GROWTH CHART
+        ====================================================== */
+
+        const growthCanvas =
+            document.getElementById(
+                "growthRegionChart"
+            );
+
+        if (
+            growthCanvas &&
+            growthData.length
+        ) {
+
+            new Chart(
+                growthCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            growthData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Growth %",
+
+                                data:
+                                    growthData.map(
+                                        item => item.value
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                Number(
+                                                    context.raw
+                                                ).toFixed(2)
+                                                +
+                                                "%"
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: false,
+
+                                ticks: {
+
+                                    callback:
+                                        function (value) {
+
+                                            return (
+                                                value
+                                                +
+                                                "%"
+                                            );
+
+                                        }
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           PERFORMANCE SCORE
+        ====================================================== */
+
+        const performanceCanvas =
+            document.getElementById(
+                "performanceRegionChart"
+            );
+
+        if (
+            performanceCanvas &&
+            performanceData.length
+        ) {
+
+            new Chart(
+                performanceCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            performanceData.map(
+                                item => item.region
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Performance Score",
+
+                                data:
+                                    performanceData.map(
+                                        item => item.value
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                " Score: "
+                                                +
+                                                Number(
+                                                    context.raw
+                                                ).toFixed(2)
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                min: 0,
+
+                                max: 100,
+
+                                beginAtZero: true
+
+                            },
+
+                            y: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

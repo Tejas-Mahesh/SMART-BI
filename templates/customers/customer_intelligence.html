@@ -1,0 +1,2152 @@
+{% extends "base.html" %}
+
+{% block title %}
+Customer Intelligence | Smart BI
+{% endblock %}
+
+{% block content %}
+
+<div class="customer-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="customer-header">
+
+        <div>
+            <div class="customer-eyebrow">
+                ANALYTICS / CUSTOMER INTELLIGENCE
+            </div>
+
+            <h1>
+                Customer Intelligence
+            </h1>
+
+            <p>
+                Understand customer behavior, value, loyalty and risk.
+            </p>
+        </div>
+
+        <div class="customer-dataset">
+
+            <span class="dataset-status-dot"></span>
+
+            <div>
+                <small>ACTIVE DATASET</small>
+
+                <strong>
+                    {{ dataset.name }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <div class="customer-kpi-grid">
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                👥
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>Total Customers</span>
+
+                <strong>
+                    {{ metrics.total_customers|floatformat:0 }}
+                </strong>
+
+                <small>
+                    Unique customers
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                ✦
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>New Customers</span>
+
+                <strong>
+                    {{ metrics.new_customers|floatformat:0 }}
+                </strong>
+
+                <small>
+                    First-time buyers
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                ↻
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>Repeat Customers</span>
+
+                <strong>
+                    {{ metrics.repeat_customers|floatformat:0 }}
+                </strong>
+
+                <small>
+                    More than one order
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                %
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>Repeat Rate</span>
+
+                <strong>
+                    {{ metrics.repeat_rate|floatformat:2 }}%
+                </strong>
+
+                <small>
+                    Customer retention signal
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                ₹
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>Avg Customer Value</span>
+
+                <strong>
+                    ₹{{ metrics.average_customer_value|floatformat:2 }}
+                </strong>
+
+                <small>
+                    Revenue per customer
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="customer-kpi-card">
+
+            <div class="customer-kpi-icon">
+                ◈
+            </div>
+
+            <div class="customer-kpi-content">
+
+                <span>Customer Revenue</span>
+
+                <strong>
+                    ₹{{ metrics.total_customer_revenue|floatformat:2 }}
+                </strong>
+
+                <small>
+                    Revenue from customers
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RFM INTRO
+    ====================================================== -->
+
+    <div class="customer-section-heading">
+
+        <div>
+            <span class="customer-section-label">
+                CUSTOMER SEGMENTATION
+            </span>
+
+            <h2>
+                Understand Your Customer Base
+            </h2>
+        </div>
+
+        <div class="customer-analysis-badge">
+            RFM + K-MEANS
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEGMENT CHARTS
+    ====================================================== -->
+
+    <div class="customer-two-column">
+
+        <div class="customer-chart-card">
+
+            <div class="customer-card-header">
+
+                <div>
+                    <span class="customer-card-label">
+                        CUSTOMER DISTRIBUTION
+                    </span>
+
+                    <h3>
+                        Customer Segments
+                    </h3>
+                </div>
+
+                <span class="customer-card-icon">
+                    ◉
+                </span>
+
+            </div>
+
+            <div class="customer-chart-container">
+                <canvas id="segmentDistributionChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="customer-chart-card">
+
+            <div class="customer-card-header">
+
+                <div>
+                    <span class="customer-card-label">
+                        REVENUE CONTRIBUTION
+                    </span>
+
+                    <h3>
+                        Revenue by Segment
+                    </h3>
+                </div>
+
+                <span class="customer-card-icon">
+                    ₹
+                </span>
+
+            </div>
+
+            <div class="customer-chart-container">
+                <canvas id="segmentRevenueChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RFM ANALYSIS
+    ====================================================== -->
+
+    <div class="customer-chart-card customer-large-chart">
+
+        <div class="customer-card-header">
+
+            <div>
+                <span class="customer-card-label">
+                    RFM ANALYSIS
+                </span>
+
+                <h3>
+                    Customer Recency vs Monetary Value
+                </h3>
+
+                <p>
+                    Customers closer to the top-left generally represent
+                    more recent and higher-value relationships.
+                </p>
+            </div>
+
+            <div class="rfm-legend">
+
+                <span>
+                    ● Recency
+                </span>
+
+                <span>
+                    ● Monetary
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="customer-rfm-chart">
+            <canvas id="rfmChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         K-MEANS
+    ====================================================== -->
+
+    <div class="customer-chart-card customer-large-chart">
+
+        <div class="customer-card-header">
+
+            <div>
+                <span class="customer-card-label">
+                    MACHINE LEARNING
+                </span>
+
+                <h3>
+                    K-Means Customer Clusters
+                </h3>
+
+                <p>
+                    Customers are grouped using behavioral patterns
+                    based on recency, purchase frequency and monetary value.
+                </p>
+            </div>
+
+            <div class="ml-badge">
+                ML
+            </div>
+
+        </div>
+
+        <div class="customer-cluster-chart">
+            <canvas id="clusterChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TOP CUSTOMERS + AT RISK
+    ====================================================== -->
+
+    <div class="customer-two-column">
+
+        <!-- TOP CUSTOMERS -->
+
+        <div class="customer-table-card">
+
+            <div class="customer-card-header">
+
+                <div>
+                    <span class="customer-card-label">
+                        CUSTOMER VALUE
+                    </span>
+
+                    <h3>
+                        Top Customers
+                    </h3>
+                </div>
+
+                <span class="customer-card-icon">
+                    ★
+                </span>
+
+            </div>
+
+            <div class="customer-table-wrapper">
+
+                {% if top_customers %}
+
+                <table class="customer-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Customer</th>
+                            <th>Revenue</th>
+                            <th>Orders</th>
+                            <th>Recency</th>
+                            <th>Segment</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for customer in top_customers %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ customer.customer }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ₹{{ customer.revenue|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {{ customer.orders }}
+                            </td>
+
+                            <td>
+                                {{ customer.recency }} days
+                            </td>
+
+                            <td>
+
+                                <span class="customer-segment-pill">
+                                    {{ customer.segment }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="customer-empty">
+                    No customer records available.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- AT RISK -->
+
+        <div class="customer-table-card">
+
+            <div class="customer-card-header">
+
+                <div>
+                    <span class="customer-card-label">
+                        RETENTION
+                    </span>
+
+                    <h3>
+                        At-Risk Customers
+                    </h3>
+                </div>
+
+                <span class="customer-card-icon warning-icon">
+                    !
+                </span>
+
+            </div>
+
+            <div class="customer-table-wrapper">
+
+                {% if at_risk_customers %}
+
+                <table class="customer-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Customer</th>
+                            <th>Revenue</th>
+                            <th>Orders</th>
+                            <th>Inactive</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for customer in at_risk_customers %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ customer.customer }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ₹{{ customer.revenue|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {{ customer.orders }}
+                            </td>
+
+                            <td>
+
+                                <span class="risk-days">
+                                    {{ customer.recency }} days
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                {% else %}
+
+                <div class="customer-no-risk">
+
+                    <div class="no-risk-icon">
+                        ✓
+                    </div>
+
+                    <strong>
+                        No high-risk customers detected
+                    </strong>
+
+                    <span>
+                        Current RFM analysis did not classify
+                        any customers as At Risk.
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEGMENT PERFORMANCE
+    ====================================================== -->
+
+    <div class="customer-table-card">
+
+        <div class="customer-card-header">
+
+            <div>
+
+                <span class="customer-card-label">
+                    SEGMENT PERFORMANCE
+                </span>
+
+                <h3>
+                    Customer Segment Analysis
+                </h3>
+
+            </div>
+
+            <span class="customer-card-icon">
+                ▦
+            </span>
+
+        </div>
+
+
+        <div class="customer-table-wrapper">
+
+            {% if segment_summary %}
+
+            <table class="customer-table segment-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Segment</th>
+                        <th>Customers</th>
+                        <th>Share</th>
+                        <th>Revenue</th>
+                        <th>Orders</th>
+                        <th>Avg Value</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for segment in segment_summary %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="segment-name">
+
+                                <span class="segment-dot"></span>
+
+                                <strong>
+                                    {{ segment.segment }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+                            {{ segment.customers }}
+                        </td>
+
+                        <td>
+
+                            <div class="segment-share">
+
+                                <div class="share-bar">
+
+                                    <span
+                                        style="width: {{ segment.percentage }}%;"
+                                    ></span>
+
+                                </div>
+
+                                <small>
+                                    {{ segment.percentage }}%
+                                </small>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+                            ₹{{ segment.revenue|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ segment.orders }}
+                        </td>
+
+                        <td>
+                            ₹{{ segment.average_value|floatformat:2 }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="customer-empty">
+                No customer segmentation data available.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INSIGHTS
+    ====================================================== -->
+
+    <div class="customer-section-heading insights-heading">
+
+        <div>
+
+            <span class="customer-section-label">
+                BUSINESS INTELLIGENCE
+            </span>
+
+            <h2>
+                Customer Insights
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="customer-insights-grid">
+
+        {% for insight in insights %}
+
+        <div class="
+            customer-insight-card
+            insight-{{ insight.type }}
+        ">
+
+            <div class="insight-icon">
+
+                {% if insight.type == "positive" %}
+                    ✓
+                {% elif insight.type == "warning" %}
+                    !
+                {% else %}
+                    i
+                {% endif %}
+
+            </div>
+
+            <div>
+
+                <span>
+                    {{ insight.title }}
+                </span>
+
+                <p>
+                    {{ insight.message }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="customer-empty">
+            No customer insights are available.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =====================================================
+         DATA SCIENCE FOOTER
+    ====================================================== -->
+
+    <div class="customer-method-card">
+
+        <div class="method-icon">
+            ◈
+        </div>
+
+        <div>
+
+            <strong>
+                How Smart BI analyzes customers
+            </strong>
+
+            <p>
+                Customer behavior is evaluated using RFM
+                (Recency, Frequency and Monetary Value) and
+                K-Means clustering. These techniques help identify
+                valuable, loyal, new, potential and at-risk customer groups.
+            </p>
+
+        </div>
+
+        <div class="method-tags">
+
+            <span>RFM</span>
+            <span>K-MEANS</span>
+            <span>SCALING</span>
+            <span>SEGMENTATION</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   CUSTOMER INTELLIGENCE
+========================================================= */
+
+.customer-page {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.customer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+.customer-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #38bdf8;
+    margin-bottom: 9px;
+}
+
+.customer-header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #f8fafc;
+}
+
+.customer-header p {
+    margin: 8px 0 0;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.customer-dataset {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    min-width: 220px;
+}
+
+.customer-dataset small {
+    display: block;
+    color: #64748b;
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    font-weight: 800;
+    margin-bottom: 3px;
+}
+
+.customer-dataset strong {
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+.dataset-status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.7);
+}
+
+
+/* =========================================================
+   KPI
+========================================================= */
+
+.customer-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 38px;
+}
+
+.customer-kpi-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 18px;
+    min-height: 112px;
+    background: linear-gradient(
+        145deg,
+        #111827,
+        #0d1522
+    );
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.customer-kpi-card::after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    right: -35px;
+    bottom: -35px;
+    border-radius: 50%;
+    background: rgba(56, 189, 248, 0.07);
+}
+
+.customer-kpi-card:hover {
+    transform: translateY(-3px);
+    border-color: #334155;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.customer-kpi-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.customer-kpi-content {
+    min-width: 0;
+}
+
+.customer-kpi-content span {
+    display: block;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+}
+
+.customer-kpi-content strong {
+    display: block;
+    margin-top: 5px;
+    color: #f8fafc;
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+.customer-kpi-content small {
+    display: block;
+    margin-top: 4px;
+    color: #475569;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.customer-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 12px 0 17px;
+}
+
+.customer-section-label {
+    color: #38bdf8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.customer-section-heading h2 {
+    margin: 5px 0 0;
+    color: #f1f5f9;
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.customer-analysis-badge,
+.ml-badge {
+    padding: 7px 11px;
+    border: 1px solid #164e63;
+    border-radius: 8px;
+    background: rgba(8, 145, 178, 0.08);
+    color: #67e8f9;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   COLUMNS
+========================================================= */
+
+.customer-two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.customer-chart-card,
+.customer-table-card {
+    background: #0f1724;
+    border: 1px solid #1e293b;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.customer-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 21px 13px;
+}
+
+.customer-card-label {
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.customer-card-header h3 {
+    margin: 5px 0 0;
+    color: #e2e8f0;
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.customer-card-header p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.6;
+    max-width: 650px;
+}
+
+.customer-card-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #172033;
+    border: 1px solid #243044;
+    border-radius: 9px;
+    color: #38bdf8;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.warning-icon {
+    color: #fbbf24;
+}
+
+.customer-chart-container {
+    height: 290px;
+    padding: 5px 20px 20px;
+}
+
+.customer-large-chart {
+    min-height: 410px;
+}
+
+.customer-rfm-chart,
+.customer-cluster-chart {
+    height: 320px;
+    padding: 5px 25px 25px;
+}
+
+
+/* =========================================================
+   RFM LEGEND
+========================================================= */
+
+.rfm-legend {
+    display: flex;
+    gap: 12px;
+    color: #64748b;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   TABLES
+========================================================= */
+
+.customer-table-wrapper {
+    overflow-x: auto;
+}
+
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+}
+
+.customer-table th {
+    padding: 11px 20px;
+    text-align: left;
+    color: #64748b;
+    background: #0b1320;
+    border-top: 1px solid #1e293b;
+    border-bottom: 1px solid #1e293b;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.customer-table td {
+    padding: 13px 20px;
+    color: #94a3b8;
+    border-bottom: 1px solid #182334;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.customer-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.customer-table tbody tr:hover {
+    background: #111d2d;
+}
+
+.customer-table td strong {
+    color: #dbeafe;
+    font-weight: 700;
+}
+
+.customer-segment-pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.08);
+    color: #67e8f9;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.risk-days {
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   SEGMENT TABLE
+========================================================= */
+
+.segment-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.segment-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.45);
+}
+
+.segment-share {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.share-bar {
+    width: 65px;
+    height: 5px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #1e293b;
+}
+
+.share-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #38bdf8;
+}
+
+.segment-share small {
+    color: #64748b;
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+
+.customer-empty {
+    padding: 45px 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.customer-no-risk {
+    min-height: 190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 25px;
+}
+
+.no-risk-icon {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 11px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.customer-no-risk strong {
+    color: #cbd5e1;
+    font-size: 12px;
+}
+
+.customer-no-risk span {
+    max-width: 320px;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   INSIGHTS
+========================================================= */
+
+.insights-heading {
+    margin-top: 38px;
+}
+
+.customer-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.customer-insight-card {
+    display: flex;
+    gap: 13px;
+    padding: 17px;
+    border: 1px solid #1e293b;
+    border-radius: 13px;
+    background: #0f1724;
+}
+
+.insight-icon {
+    width: 33px;
+    height: 33px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.customer-insight-card > div:last-child > span {
+    display: block;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.customer-insight-card p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.insight-positive {
+    border-color: rgba(34, 197, 94, 0.16);
+}
+
+.insight-positive .insight-icon {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+}
+
+.insight-warning {
+    border-color: rgba(251, 191, 36, 0.16);
+}
+
+.insight-warning .insight-icon {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+}
+
+.insight-neutral {
+    border-color: rgba(56, 189, 248, 0.16);
+}
+
+.insight-neutral .insight-icon {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+}
+
+
+/* =========================================================
+   METHOD CARD
+========================================================= */
+
+.customer-method-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 19px 21px;
+    margin-top: 18px;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    background: linear-gradient(
+        100deg,
+        #0e1725,
+        #101b2b
+    );
+}
+
+.method-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: rgba(56, 189, 248, 0.09);
+    color: #38bdf8;
+    font-weight: 800;
+}
+
+.customer-method-card strong {
+    display: block;
+    color: #dbeafe;
+    font-size: 12px;
+}
+
+.customer-method-card p {
+    max-width: 720px;
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.method-tags {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.method-tags span {
+    padding: 5px 8px;
+    border: 1px solid #26354a;
+    border-radius: 5px;
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1300px) {
+
+    .customer-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 950px) {
+
+    .customer-two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .customer-method-card {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .method-tags {
+        margin-left: 0;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .customer-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-header h1 {
+        font-size: 26px;
+    }
+
+    .customer-dataset {
+        width: 100%;
+    }
+
+    .customer-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .customer-chart-container {
+        height: 250px;
+    }
+
+    .customer-rfm-chart,
+    .customer-cluster-chart {
+        height: 270px;
+        padding: 5px 12px 15px;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       DATA FROM DJANGO
+    ====================================================== */
+
+    const segmentSummary =
+        {{ segment_summary|safe }};
+
+    const rfmData =
+        {{ rfm_distribution|safe }};
+
+    /* =====================================================
+       CHART DEFAULTS
+    ====================================================== */
+
+    Chart.defaults.color = "#64748b";
+
+    Chart.defaults.font.family =
+        "Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+
+
+    /* =====================================================
+       SEGMENT DISTRIBUTION
+    ====================================================== */
+
+    const segmentLabels =
+        segmentSummary.map(
+            item => item.segment
+        );
+
+    const segmentCustomers =
+        segmentSummary.map(
+            item => item.customers
+        );
+
+    const segmentRevenue =
+        segmentSummary.map(
+            item => item.revenue
+        );
+
+
+    const segmentDistributionCanvas =
+        document.getElementById(
+            "segmentDistributionChart"
+        );
+
+
+    if (
+        segmentDistributionCanvas &&
+        segmentSummary.length
+    ) {
+
+        new Chart(
+            segmentDistributionCanvas,
+            {
+                type: "doughnut",
+
+                data: {
+                    labels: segmentLabels,
+
+                    datasets: [
+                        {
+                            data: segmentCustomers,
+
+                            borderWidth: 2,
+
+                            borderColor: "#0f1724",
+
+                            hoverOffset: 8
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "66%",
+
+                    plugins: {
+
+                        legend: {
+                            position: "bottom",
+
+                            labels: {
+                                padding: 16,
+                                boxWidth: 10,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function (
+                                    context
+                                ) {
+
+                                    const value =
+                                        context.raw;
+
+                                    const total =
+                                        segmentCustomers
+                                            .reduce(
+                                                (
+                                                    a,
+                                                    b
+                                                ) =>
+                                                    a + b,
+                                                0
+                                            );
+
+                                    const percentage =
+                                        total
+                                            ? (
+                                                value /
+                                                total
+                                            ) * 100
+                                            : 0;
+
+                                    return (
+                                        " " +
+                                        value +
+                                        " customers (" +
+                                        percentage.toFixed(
+                                            1
+                                        ) +
+                                        "%)"
+                                    );
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       REVENUE BY SEGMENT
+    ====================================================== */
+
+    const segmentRevenueCanvas =
+        document.getElementById(
+            "segmentRevenueChart"
+        );
+
+
+    if (
+        segmentRevenueCanvas &&
+        segmentSummary.length
+    ) {
+
+        new Chart(
+            segmentRevenueCanvas,
+            {
+                type: "bar",
+
+                data: {
+
+                    labels: segmentLabels,
+
+                    datasets: [
+                        {
+                            label: "Revenue",
+
+                            data: segmentRevenue,
+
+                            borderRadius: 6,
+
+                            maxBarThickness: 45
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function (
+                                    context
+                                ) {
+
+                                    return (
+                                        " Revenue: ₹" +
+                                        Number(
+                                            context.raw
+                                        ).toLocaleString(
+                                            "en-IN",
+                                            {
+                                                maximumFractionDigits: 2
+                                            }
+                                        )
+                                    );
+
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+                            grid: {
+                                display: false
+                            },
+
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            grid: {
+                                color:
+                                    "rgba(148,163,184,0.08)"
+                            },
+
+                            ticks: {
+
+                                font: {
+                                    size: 9
+                                },
+
+                                callback: function (
+                                    value
+                                ) {
+
+                                    return "₹" +
+                                        Number(
+                                            value
+                                        ).toLocaleString(
+                                            "en-IN",
+                                            {
+                                                notation:
+                                                    "compact"
+                                            }
+                                        );
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       RFM SCATTER
+    ====================================================== */
+
+    const rfmCanvas =
+        document.getElementById(
+            "rfmChart"
+        );
+
+
+    if (
+        rfmCanvas &&
+        rfmData &&
+        rfmData.monetary &&
+        rfmData.recency
+    ) {
+
+        const points = [];
+
+        const length =
+            Math.min(
+                rfmData.monetary.length,
+                rfmData.recency.length
+            );
+
+
+        for (
+            let i = 0;
+            i < length;
+            i++
+        ) {
+
+            points.push({
+                x: Number(
+                    rfmData.recency[i]
+                ),
+
+                y: Number(
+                    rfmData.monetary[i]
+                )
+            });
+
+        }
+
+
+        new Chart(
+            rfmCanvas,
+            {
+
+                type: "scatter",
+
+                data: {
+
+                    datasets: [
+                        {
+                            label:
+                                "Customers",
+
+                            data:
+                                points,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 7
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function (
+                                    context
+                                ) {
+
+                                    const point =
+                                        context.raw;
+
+                                    return [
+                                        " Recency: " +
+                                        point.x +
+                                        " days",
+
+                                        " Monetary: ₹" +
+                                        Number(
+                                            point.y
+                                        ).toLocaleString(
+                                            "en-IN",
+                                            {
+                                                maximumFractionDigits: 2
+                                            }
+                                        )
+                                    ];
+
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            title: {
+                                display: true,
+                                text:
+                                    "Recency (Days)"
+                            },
+
+                            reverse: false,
+
+                            grid: {
+                                color:
+                                    "rgba(148,163,184,0.08)"
+                            },
+
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+
+                        },
+
+                        y: {
+
+                            title: {
+                                display: true,
+                                text:
+                                    "Monetary Value"
+                            },
+
+                            beginAtZero: true,
+
+                            grid: {
+                                color:
+                                    "rgba(148,163,184,0.08)"
+                            },
+
+                            ticks: {
+
+                                font: {
+                                    size: 9
+                                },
+
+                                callback:
+                                    function (
+                                        value
+                                    ) {
+
+                                        return "₹" +
+                                            Number(
+                                                value
+                                            ).toLocaleString(
+                                                "en-IN",
+                                                {
+                                                    notation:
+                                                        "compact"
+                                                }
+                                            );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       K-MEANS CLUSTERS
+    ====================================================== */
+
+    const clusterCanvas =
+        document.getElementById(
+            "clusterChart"
+        );
+
+
+    if (
+        clusterCanvas &&
+        rfmData &&
+        rfmData.frequency &&
+        rfmData.monetary
+    ) {
+
+        const clusterPoints = [];
+
+        const customerCount =
+            Math.min(
+                rfmData.frequency.length,
+                rfmData.monetary.length
+            );
+
+
+        /*
+         * The backend stores the K-Means cluster
+         * on the customer-level dataframe.
+         *
+         * The current page uses the RFM distribution
+         * for the main visualization.
+         */
+
+        for (
+            let i = 0;
+            i < customerCount;
+            i++
+        ) {
+
+            clusterPoints.push({
+
+                x: Number(
+                    rfmData.frequency[i]
+                ),
+
+                y: Number(
+                    rfmData.monetary[i]
+                )
+
+            });
+
+        }
+
+
+        new Chart(
+            clusterCanvas,
+            {
+
+                type: "scatter",
+
+                data: {
+
+                    datasets: [
+                        {
+
+                            label:
+                                "Customer Behavioral Clusters",
+
+                            data:
+                                clusterPoints,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 7
+
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        },
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (
+                                        context
+                                    ) {
+
+                                        return [
+                                            " Frequency: " +
+                                            context.raw.x,
+
+                                            " Monetary: ₹" +
+                                            Number(
+                                                context.raw.y
+                                            ).toLocaleString(
+                                                "en-IN",
+                                                {
+                                                    maximumFractionDigits: 2
+                                                }
+                                            )
+                                        ];
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            beginAtZero: true,
+
+                            title: {
+                                display: true,
+                                text:
+                                    "Purchase Frequency"
+                            },
+
+                            grid: {
+                                color:
+                                    "rgba(148,163,184,0.08)"
+                            }
+
+                        },
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            title: {
+                                display: true,
+                                text:
+                                    "Monetary Value"
+                            },
+
+                            grid: {
+                                color:
+                                    "rgba(148,163,184,0.08)"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

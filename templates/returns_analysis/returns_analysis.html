@@ -1,0 +1,1509 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Returns Analysis | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Returns Analysis
+{% endblock %}
+
+{% block content %}
+
+<div class="returns-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="returns-hero">
+
+        <div class="returns-hero-content">
+
+            <div class="returns-eyebrow">
+                SMART BI · ADVANCED ANALYTICS
+            </div>
+
+            <h1>
+                Returns Intelligence
+            </h1>
+
+            <p>
+                Understand return patterns, identify high-risk products,
+                discover the major causes of returns, and measure their
+                impact on business performance.
+            </p>
+
+            <div class="returns-dataset-info">
+
+                <span class="returns-status-dot"></span>
+
+                <span>
+                    Active Dataset:
+                    <strong>{{ dataset.name }}</strong>
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="returns-hero-decoration">
+
+            <div class="returns-orbit orbit-one"></div>
+            <div class="returns-orbit orbit-two"></div>
+
+            <div class="returns-hero-icon">
+                ↩
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PRIMARY KPI CARDS
+    ====================================================== -->
+
+    <section class="returns-kpi-grid">
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                ↩
+            </div>
+
+            <div class="returns-kpi-label">
+                TOTAL RETURNS
+            </div>
+
+            <div class="returns-kpi-value">
+                {{ metrics.total_returns|default:"0" }}
+            </div>
+
+            <div class="returns-kpi-description">
+                Returned transactions
+            </div>
+
+        </div>
+
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                %
+            </div>
+
+            <div class="returns-kpi-label">
+                RETURN RATE
+            </div>
+
+            <div class="returns-kpi-value">
+                {{ metrics.return_rate|default:"0" }}%
+            </div>
+
+            <div class="returns-kpi-description">
+                Overall return percentage
+            </div>
+
+        </div>
+
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                📦
+            </div>
+
+            <div class="returns-kpi-label">
+                RETURNED UNITS
+            </div>
+
+            <div class="returns-kpi-value">
+                {{ metrics.returned_units|default:"0" }}
+            </div>
+
+            <div class="returns-kpi-description">
+                Units associated with returns
+            </div>
+
+        </div>
+
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                ₹
+            </div>
+
+            <div class="returns-kpi-label">
+                REVENUE AFFECTED
+            </div>
+
+            <div class="returns-kpi-value">
+                ₹{{ metrics.revenue_affected|floatformat:0 }}
+            </div>
+
+            <div class="returns-kpi-description">
+                Revenue associated with returns
+            </div>
+
+        </div>
+
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                ∑
+            </div>
+
+            <div class="returns-kpi-label">
+                PROFIT AFFECTED
+            </div>
+
+            <div class="returns-kpi-value">
+                ₹{{ metrics.profit_affected|floatformat:0 }}
+            </div>
+
+            <div class="returns-kpi-description">
+                Profit associated with returns
+            </div>
+
+        </div>
+
+
+        <div class="returns-kpi-card">
+
+            <div class="returns-kpi-icon">
+                ⌀
+            </div>
+
+            <div class="returns-kpi-label">
+                AVG RETURN VALUE
+            </div>
+
+            <div class="returns-kpi-value">
+                ₹{{ metrics.average_return_value|floatformat:0 }}
+            </div>
+
+            <div class="returns-kpi-description">
+                Average value per return
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RETURN TREND
+    ====================================================== -->
+
+    <section class="returns-panel returns-wide-panel">
+
+        <div class="returns-panel-header">
+
+            <div>
+
+                <span class="returns-section-label">
+                    TIME ANALYSIS
+                </span>
+
+                <h2>
+                    Return Trend
+                </h2>
+
+                <p>
+                    Monthly movement of returned transactions and
+                    revenue affected by returns.
+                </p>
+
+            </div>
+
+            <div class="returns-panel-badge">
+                MONTHLY
+            </div>
+
+        </div>
+
+        <div class="returns-chart-container returns-large-chart">
+            <canvas id="returnTrendChart"></canvas>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RETURN REASONS + REGION
+    ====================================================== -->
+
+    <section class="returns-chart-grid">
+
+        <!-- RETURN REASONS -->
+
+        <div class="returns-panel">
+
+            <div class="returns-panel-header">
+
+                <div>
+
+                    <span class="returns-section-label">
+                        ROOT PATTERNS
+                    </span>
+
+                    <h2>
+                        Return Reasons
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="returns-chart-container">
+                <canvas id="returnReasonsChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- REGION -->
+
+        <div class="returns-panel">
+
+            <div class="returns-panel-header">
+
+                <div>
+
+                    <span class="returns-section-label">
+                        GEOGRAPHIC ANALYSIS
+                    </span>
+
+                    <h2>
+                        Returns by Region
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="returns-chart-container">
+                <canvas id="regionReturnsChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CATEGORY + PRODUCT
+    ====================================================== -->
+
+    <section class="returns-chart-grid">
+
+        <!-- CATEGORY -->
+
+        <div class="returns-panel">
+
+            <div class="returns-panel-header">
+
+                <div>
+
+                    <span class="returns-section-label">
+                        CATEGORY ANALYSIS
+                    </span>
+
+                    <h2>
+                        Category Return Rate
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="returns-chart-container">
+                <canvas id="categoryReturnsChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- PRODUCT -->
+
+        <div class="returns-panel">
+
+            <div class="returns-panel-header">
+
+                <div>
+
+                    <span class="returns-section-label">
+                        PRODUCT ANALYSIS
+                    </span>
+
+                    <h2>
+                        Highest Return Products
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="returns-chart-container">
+                <canvas id="productReturnsChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HIGH RETURN PRODUCTS
+    ====================================================== -->
+
+    <section class="returns-panel">
+
+        <div class="returns-panel-header">
+
+            <div>
+
+                <span class="returns-section-label">
+                    RISK MONITORING
+                </span>
+
+                <h2>
+                    High Return Products
+                </h2>
+
+                <p>
+                    Products with return rates of 15% or higher.
+                </p>
+
+            </div>
+
+            <div class="returns-panel-badge warning">
+                ATTENTION REQUIRED
+            </div>
+
+        </div>
+
+
+        {% if high_return_products %}
+
+        <div class="returns-product-grid">
+
+            {% for product in high_return_products|slice:":8" %}
+
+            <div class="returns-product-card">
+
+                <div class="returns-product-top">
+
+                    <div class="returns-product-rank">
+                        #{{ forloop.counter }}
+                    </div>
+
+                    <div class="returns-risk-dot"></div>
+
+                </div>
+
+                <div class="returns-product-name">
+
+                    {% for key, value in product.items %}
+
+                        {% if key != "total_records" and key != "returns" and key != "return_rate" and key != "returned_units" and key != "revenue_affected" and key != "classification" %}
+
+                            {{ value }}
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="returns-product-rate">
+
+                    {{ product.return_rate|floatformat:2 }}%
+
+                </div>
+
+                <div class="returns-product-caption">
+                    Return Rate
+                </div>
+
+                <div class="returns-product-meta">
+
+                    <span>
+                        Returns:
+                        <strong>{{ product.returns }}</strong>
+                    </span>
+
+                    <span>
+                        Units:
+                        <strong>{{ product.returned_units }}</strong>
+                    </span>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="returns-empty-state">
+
+            <div class="returns-empty-icon">
+                ✓
+            </div>
+
+            <h3>
+                No High-Risk Products
+            </h3>
+
+            <p>
+                No products currently have a return rate of 15% or higher.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         RETURN RISK TABLE
+    ====================================================== -->
+
+    <section class="returns-panel">
+
+        <div class="returns-panel-header">
+
+            <div>
+
+                <span class="returns-section-label">
+                    RISK SCORING
+                </span>
+
+                <h2>
+                    Product Return Risk
+                </h2>
+
+                <p>
+                    Products ranked using return frequency and return rate.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="returns-table-wrapper">
+
+            <table class="returns-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            PRODUCT
+                        </th>
+
+                        <th>
+                            TOTAL RECORDS
+                        </th>
+
+                        <th>
+                            RETURNS
+                        </th>
+
+                        <th>
+                            RETURN RATE
+                        </th>
+
+                        <th>
+                            REVENUE AFFECTED
+                        </th>
+
+                        <th>
+                            RISK SCORE
+                        </th>
+
+                        <th>
+                            RISK LEVEL
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for product in risk_products|slice:":30" %}
+
+                    <tr>
+
+                        <td class="returns-product-table-name">
+
+                            {% for key, value in product.items %}
+
+                                {% if key != "total_records" and key != "returns" and key != "return_rate" and key != "returned_units" and key != "revenue_affected" and key != "risk_score" and key != "risk_level" and key != "classification" %}
+
+                                    {{ value }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </td>
+
+                        <td>
+                            {{ product.total_records }}
+                        </td>
+
+                        <td>
+                            {{ product.returns }}
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                returns-rate-badge
+                                {% if product.return_rate >= 20 %}
+                                    critical
+                                {% elif product.return_rate >= 15 %}
+                                    high
+                                {% elif product.return_rate >= 8 %}
+                                    moderate
+                                {% else %}
+                                    low
+                                {% endif %}
+                            ">
+
+                                {{ product.return_rate|floatformat:2 }}%
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            ₹{{ product.revenue_affected|floatformat:0 }}
+                        </td>
+
+                        <td>
+
+                            <div class="returns-risk-score">
+
+                                <div class="returns-risk-score-bar">
+
+                                    <span
+                                        style="width: {{ product.risk_score }}%;"
+                                    ></span>
+
+                                </div>
+
+                                <strong>
+                                    {{ product.risk_score|floatformat:1 }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                returns-level-badge
+                                {{ product.risk_level|lower }}
+                            ">
+
+                                {{ product.risk_level }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7">
+
+                            <div class="returns-table-empty">
+                                No product return data available.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CUSTOMER RETURN BEHAVIOR
+    ====================================================== -->
+
+    <section class="returns-panel">
+
+        <div class="returns-panel-header">
+
+            <div>
+
+                <span class="returns-section-label">
+                    CUSTOMER BEHAVIOR
+                </span>
+
+                <h2>
+                    Customers with Return Activity
+                </h2>
+
+                <p>
+                    Customers ranked by return frequency and return rate.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="returns-table-wrapper">
+
+            <table class="returns-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            CUSTOMER
+                        </th>
+
+                        <th>
+                            TOTAL ORDERS
+                        </th>
+
+                        <th>
+                            RETURNS
+                        </th>
+
+                        <th>
+                            RETURN RATE
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for customer in customer_returns|slice:":25" %}
+
+                    <tr>
+
+                        <td class="returns-customer-id">
+
+                            {% for key, value in customer.items %}
+
+                                {% if key != "total_orders" and key != "returns" and key != "return_rate" %}
+
+                                    {{ value }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </td>
+
+                        <td>
+                            {{ customer.total_orders }}
+                        </td>
+
+                        <td>
+                            {{ customer.returns }}
+                        </td>
+
+                        <td>
+
+                            <span class="
+                                returns-rate-badge
+                                {% if customer.return_rate >= 50 %}
+                                    critical
+                                {% elif customer.return_rate >= 30 %}
+                                    high
+                                {% elif customer.return_rate >= 15 %}
+                                    moderate
+                                {% else %}
+                                    low
+                                {% endif %}
+                            ">
+
+                                {{ customer.return_rate|floatformat:2 }}%
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            <div class="returns-table-empty">
+                                No customer return activity available.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         BUSINESS INSIGHTS
+    ====================================================== -->
+
+    <section class="returns-panel">
+
+        <div class="returns-panel-header">
+
+            <div>
+
+                <span class="returns-section-label">
+                    SMART BI
+                </span>
+
+                <h2>
+                    Business Insights
+                </h2>
+
+                <p>
+                    Automatically generated observations from the return data.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if insights %}
+
+        <div class="returns-insights-grid">
+
+            {% for insight in insights %}
+
+            <div class="
+                returns-insight-card
+                {{ insight.type }}
+            ">
+
+                <div class="returns-insight-icon">
+
+                    {% if insight.type == "critical" %}
+                        !
+                    {% elif insight.type == "warning" %}
+                        ⚠
+                    {% elif insight.type == "positive" %}
+                        ✓
+                    {% else %}
+                        i
+                    {% endif %}
+
+                </div>
+
+                <div class="returns-insight-content">
+
+                    <h3>
+                        {{ insight.title }}
+                    </h3>
+
+                    <p>
+                        {{ insight.message }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="returns-empty-state">
+
+            <div class="returns-empty-icon">
+                i
+            </div>
+
+            <h3>
+                No insights available
+            </h3>
+
+            <p>
+                More return data is required to generate business insights.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         METHODOLOGY
+    ====================================================== -->
+
+    <section class="returns-methodology">
+
+        <div class="returns-methodology-icon">
+            ◈
+        </div>
+
+        <div>
+
+            <span class="returns-section-label">
+                ANALYTICS METHODOLOGY
+            </span>
+
+            <h2>
+                How Returns Intelligence Works
+            </h2>
+
+            <p>
+                Smart BI automatically detects return indicators,
+                identifies returned transactions, calculates return
+                rates, measures revenue impact, compares products
+                and regions, analyzes return reasons, and generates
+                risk scores for products.
+            </p>
+
+            <div class="returns-methodology-tags">
+
+                <span>Return Rate</span>
+                <span>Product Analysis</span>
+                <span>Regional Analysis</span>
+                <span>Reason Analysis</span>
+                <span>Risk Scoring</span>
+                <span>Customer Behavior</span>
+                <span>Trend Analysis</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =====================================================
+           DATA FROM DJANGO
+        ====================================================== */
+
+        const trendData =
+            {{ trend_data|safe }};
+
+        const reasonData =
+            {{ reason_data|safe }};
+
+        const regionData =
+            {{ region_returns|safe }};
+
+        const categoryData =
+            {{ category_returns|safe }};
+
+        const productData =
+            {{ product_returns|safe }};
+
+
+        /* =====================================================
+           HELPER
+        ====================================================== */
+
+        function getObjectKey(
+            object,
+            excludedKeys
+        ) {
+
+            if (!object) {
+                return null;
+            }
+
+            const keys =
+                Object.keys(object);
+
+            for (
+                let i = 0;
+                i < keys.length;
+                i++
+            ) {
+
+                if (
+                    !excludedKeys.includes(
+                        keys[i]
+                    )
+                ) {
+
+                    return keys[i];
+
+                }
+
+            }
+
+            return null;
+        }
+
+
+        /* =====================================================
+           DEFAULT CHART OPTIONS
+        ====================================================== */
+
+        Chart.defaults.font.family =
+            "Inter, Arial, sans-serif";
+
+        Chart.defaults.plugins.legend.labels.usePointStyle =
+            true;
+
+
+        /* =====================================================
+           RETURN TREND
+        ====================================================== */
+
+        const trendCanvas =
+            document.getElementById(
+                "returnTrendChart"
+            );
+
+        if (
+            trendCanvas &&
+            trendData.length
+        ) {
+
+            const labels =
+                trendData.map(
+                    item => item._month
+                );
+
+            const returnCounts =
+                trendData.map(
+                    item => item.returns
+                );
+
+            const revenueAffected =
+                trendData.map(
+                    item =>
+                        Number(
+                            item.revenue_affected || 0
+                        )
+                );
+
+            new Chart(
+                trendCanvas,
+                {
+                    type: "line",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label: "Returns",
+
+                                data: returnCounts,
+
+                                borderWidth: 3,
+
+                                tension: 0.35,
+
+                                yAxisID: "y",
+                            },
+
+                            {
+                                label: "Revenue Affected",
+
+                                data: revenueAffected,
+
+                                borderWidth: 3,
+
+                                tension: 0.35,
+
+                                yAxisID: "y1",
+                            },
+
+                        ],
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        interaction: {
+                            mode: "index",
+                            intersect: false,
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                title: {
+                                    display: true,
+                                    text: "Returns",
+                                },
+
+                            },
+
+                            y1: {
+
+                                beginAtZero: true,
+
+                                position: "right",
+
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+
+                                title: {
+                                    display: true,
+                                    text: "Revenue",
+                                },
+
+                            },
+
+                        },
+
+                    },
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           RETURN REASONS
+        ====================================================== */
+
+        const reasonCanvas =
+            document.getElementById(
+                "returnReasonsChart"
+            );
+
+        if (
+            reasonCanvas &&
+            reasonData.length
+        ) {
+
+            const reasonKey =
+                getObjectKey(
+                    reasonData[0],
+                    [
+                        "returns",
+                        "percentage",
+                    ]
+                );
+
+            const labels =
+                reasonData.map(
+                    item =>
+                        item[reasonKey]
+                );
+
+            const values =
+                reasonData.map(
+                    item =>
+                        Number(
+                            item.returns || 0
+                        )
+                );
+
+            new Chart(
+                reasonCanvas,
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+                            {
+                                data: values,
+                                borderWidth: 2,
+                            },
+                        ],
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                position: "bottom",
+                            },
+
+                        },
+
+                    },
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           REGION RETURNS
+        ====================================================== */
+
+        const regionCanvas =
+            document.getElementById(
+                "regionReturnsChart"
+            );
+
+        if (
+            regionCanvas &&
+            regionData.length
+        ) {
+
+            const regionKey =
+                getObjectKey(
+                    regionData[0],
+                    [
+                        "total_records",
+                        "returns",
+                        "return_rate",
+                        "revenue_affected",
+                    ]
+                );
+
+            const labels =
+                regionData.map(
+                    item =>
+                        item[regionKey]
+                );
+
+            const values =
+                regionData.map(
+                    item =>
+                        Number(
+                            item.return_rate || 0
+                        )
+                );
+
+            new Chart(
+                regionCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+                            {
+                                label: "Return Rate %",
+
+                                data: values,
+
+                                borderWidth: 1,
+                            },
+                        ],
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        indexAxis: "y",
+
+                        plugins: {
+
+                            legend: {
+                                display: false,
+                            },
+
+                        },
+
+                        scales: {
+
+                            x: {
+                                beginAtZero: true,
+                            },
+
+                        },
+
+                    },
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           CATEGORY RETURNS
+        ====================================================== */
+
+        const categoryCanvas =
+            document.getElementById(
+                "categoryReturnsChart"
+            );
+
+        if (
+            categoryCanvas &&
+            categoryData.length
+        ) {
+
+            const categoryKey =
+                getObjectKey(
+                    categoryData[0],
+                    [
+                        "total_records",
+                        "returns",
+                        "return_rate",
+                    ]
+                );
+
+            const labels =
+                categoryData.map(
+                    item =>
+                        item[categoryKey]
+                );
+
+            const values =
+                categoryData.map(
+                    item =>
+                        Number(
+                            item.return_rate || 0
+                        )
+                );
+
+            new Chart(
+                categoryCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label:
+                                    "Return Rate %",
+
+                                data: values,
+
+                                borderWidth: 1,
+
+                            },
+
+                        ],
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false,
+                            },
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                            },
+
+                        },
+
+                    },
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           PRODUCT RETURNS
+        ====================================================== */
+
+        const productCanvas =
+            document.getElementById(
+                "productReturnsChart"
+            );
+
+        if (
+            productCanvas &&
+            productData.length
+        ) {
+
+            const limitedProducts =
+                productData
+                .slice(0, 10)
+                .reverse();
+
+            const productKey =
+                getObjectKey(
+                    limitedProducts[0],
+                    [
+                        "total_records",
+                        "returns",
+                        "return_rate",
+                        "returned_units",
+                        "revenue_affected",
+                        "classification",
+                    ]
+                );
+
+            const labels =
+                limitedProducts.map(
+                    item =>
+                        item[productKey]
+                );
+
+            const values =
+                limitedProducts.map(
+                    item =>
+                        Number(
+                            item.return_rate || 0
+                        )
+                );
+
+            new Chart(
+                productCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label:
+                                    "Return Rate %",
+
+                                data: values,
+
+                                borderWidth: 1,
+
+                            },
+
+                        ],
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        indexAxis: "y",
+
+                        plugins: {
+
+                            legend: {
+                                display: false,
+                            },
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true,
+
+                            },
+
+                        },
+
+                    },
+
+                }
+            );
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

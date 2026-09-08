@@ -1,0 +1,1846 @@
+{% extends "base.html" %}
+
+{% block title %}
+Product Intelligence | Smart BI
+{% endblock %}
+
+{% block page_heading %}
+Product Intelligence
+{% endblock %}
+
+{% block content %}
+
+<div class="product-page">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="product-hero">
+
+        <div>
+            <div class="product-eyebrow">
+                ANALYTICS / PRODUCT INTELLIGENCE
+            </div>
+
+            <h1>Product Intelligence</h1>
+
+            <p>
+                Understand which products drive revenue, profit,
+                growth and customer demand.
+            </p>
+        </div>
+
+        <div class="product-dataset">
+
+            <span class="dataset-label">
+                ACTIVE DATASET
+            </span>
+
+            <strong>
+                {{ dataset.name }}
+            </strong>
+
+            <small>
+                {{ dataset.get_dataset_type_display }}
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KPI CARDS
+    ====================================================== -->
+
+    <div class="product-kpi-grid">
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                ▣
+            </div>
+
+            <div class="product-kpi-label">
+                TOTAL PRODUCTS
+            </div>
+
+            <div class="product-kpi-value">
+                {{ metrics.total_products|default:0 }}
+            </div>
+
+            <div class="product-kpi-note">
+                Unique products analyzed
+            </div>
+
+        </div>
+
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                ◈
+            </div>
+
+            <div class="product-kpi-label">
+                UNITS SOLD
+            </div>
+
+            <div class="product-kpi-value">
+                {{ metrics.total_units|default:0 }}
+            </div>
+
+            <div class="product-kpi-note">
+                Total units sold
+            </div>
+
+        </div>
+
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                ₹
+            </div>
+
+            <div class="product-kpi-label">
+                PRODUCT REVENUE
+            </div>
+
+            <div class="product-kpi-value">
+                ₹{{ metrics.total_revenue|floatformat:0 }}
+            </div>
+
+            <div class="product-kpi-note">
+                Total product revenue
+            </div>
+
+        </div>
+
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                ↗
+            </div>
+
+            <div class="product-kpi-label">
+                PRODUCT PROFIT
+            </div>
+
+            <div class="product-kpi-value">
+                ₹{{ metrics.total_profit|floatformat:0 }}
+            </div>
+
+            <div class="product-kpi-note">
+                Total product profit
+            </div>
+
+        </div>
+
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                ◉
+            </div>
+
+            <div class="product-kpi-label">
+                AVG PRODUCT REVENUE
+            </div>
+
+            <div class="product-kpi-value">
+                ₹{{ metrics.average_product_revenue|floatformat:0 }}
+            </div>
+
+            <div class="product-kpi-note">
+                Average revenue per product
+            </div>
+
+        </div>
+
+
+        <div class="product-kpi-card">
+
+            <div class="product-kpi-icon">
+                %
+            </div>
+
+            <div class="product-kpi-label">
+                PROFIT MARGIN
+            </div>
+
+            <div class="product-kpi-value">
+                {{ metrics.average_profit_margin|floatformat:2 }}%
+            </div>
+
+            <div class="product-kpi-note">
+                Overall product margin
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCT PERFORMANCE
+    ====================================================== -->
+
+    <div class="product-section-header">
+
+        <div>
+            <span class="product-section-tag">
+                PERFORMANCE
+            </span>
+
+            <h2>Product Performance</h2>
+
+            <p>
+                Identify products generating the strongest
+                revenue, profit and unit sales.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="product-chart-grid">
+
+        <!-- Revenue -->
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Top Products by Revenue</h3>
+                    <span>
+                        Highest revenue-generating products
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="revenueProductChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- Profit -->
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Top Products by Profit</h3>
+                    <span>
+                        Products contributing most profit
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="profitProductChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CATEGORY ANALYSIS
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+            <span class="product-section-tag">
+                CATEGORY INTELLIGENCE
+            </span>
+
+            <h2>Category Performance</h2>
+
+            <p>
+                Compare revenue, profit and margins across
+                product categories.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="product-chart-grid">
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Revenue by Category</h3>
+                    <span>
+                        Category contribution to revenue
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="categoryRevenueChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Profit by Category</h3>
+                    <span>
+                        Category contribution to profit
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="categoryProfitChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         GROWTH + RETURN
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+
+            <span class="product-section-tag">
+                PRODUCT SIGNALS
+            </span>
+
+            <h2>Growth & Return Analysis</h2>
+
+            <p>
+                Find products gaining momentum and products
+                requiring attention.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-chart-grid">
+
+        <!-- Growth -->
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Product Growth</h3>
+
+                    <span>
+                        Change between earlier and later periods
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="growthChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- Returns -->
+
+        <div class="product-chart-card">
+
+            <div class="product-chart-header">
+
+                <div>
+                    <h3>Product Return Rate</h3>
+
+                    <span>
+                        Products with highest return rates
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="product-chart-container">
+                <canvas id="returnChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROFITABILITY MATRIX
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+
+            <span class="product-section-tag">
+                STRATEGIC ANALYSIS
+            </span>
+
+            <h2>Revenue vs Profitability Matrix</h2>
+
+            <p>
+                Understand which products generate high revenue,
+                high profit, or require strategic attention.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-matrix-card">
+
+        <div class="product-matrix-chart">
+
+            <canvas id="profitabilityMatrix"></canvas>
+
+        </div>
+
+        <div class="product-matrix-legend">
+
+            <div class="matrix-item">
+                <span class="matrix-dot matrix-high"></span>
+                High Revenue / High Profit
+            </div>
+
+            <div class="matrix-item">
+                <span class="matrix-dot matrix-revenue"></span>
+                High Revenue / Low Profit
+            </div>
+
+            <div class="matrix-item">
+                <span class="matrix-dot matrix-profit"></span>
+                Low Revenue / High Profit
+            </div>
+
+            <div class="matrix-item">
+                <span class="matrix-dot matrix-low"></span>
+                Low Revenue / Low Profit
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CLASSIFICATION
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+
+            <span class="product-section-tag">
+                PRODUCT CLASSIFICATION
+            </span>
+
+            <h2>Product Portfolio</h2>
+
+            <p>
+                Products automatically classified using revenue,
+                profitability, growth and return behavior.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-classification-grid">
+
+        <div class="classification-card">
+
+            <div class="classification-icon">
+                ★
+            </div>
+
+            <div class="classification-title">
+                Best Sellers
+            </div>
+
+            <div class="classification-text">
+                Strong revenue-generating products.
+            </div>
+
+            <div
+                class="classification-count"
+                id="bestSellerCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="classification-card">
+
+            <div class="classification-icon">
+                ₹
+            </div>
+
+            <div class="classification-title">
+                Most Profitable
+            </div>
+
+            <div class="classification-text">
+                Products producing strong profit.
+            </div>
+
+            <div
+                class="classification-count"
+                id="profitableCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="classification-card">
+
+            <div class="classification-icon">
+                ↗
+            </div>
+
+            <div class="classification-title">
+                Fast Growing
+            </div>
+
+            <div class="classification-text">
+                Products gaining momentum.
+            </div>
+
+            <div
+                class="classification-count"
+                id="growthCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="classification-card">
+
+            <div class="classification-icon">
+                ⚠
+            </div>
+
+            <div class="classification-title">
+                High Return
+            </div>
+
+            <div class="classification-text">
+                Products with elevated returns.
+            </div>
+
+            <div
+                class="classification-count"
+                id="returnCount">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="classification-card">
+
+            <div class="classification-icon">
+                ↓
+            </div>
+
+            <div class="classification-title">
+                Declining
+            </div>
+
+            <div class="classification-text">
+                Products losing momentum.
+            </div>
+
+            <div
+                class="classification-count"
+                id="decliningCount">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCT TABLE
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+
+            <span class="product-section-tag">
+                PRODUCT DETAILS
+            </span>
+
+            <h2>Product Performance Table</h2>
+
+            <p>
+                Detailed product-level performance indicators.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-table-card">
+
+        <div class="product-table-wrapper">
+
+            <table class="product-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>PRODUCT</th>
+
+                        <th>UNITS</th>
+
+                        <th>REVENUE</th>
+
+                        <th>PROFIT</th>
+
+                        <th>MARGIN</th>
+
+                        <th>GROWTH</th>
+
+                        <th>RETURN RATE</th>
+
+                        <th>CLASSIFICATION</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for product in product_table %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ product.product }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+                            {{ product.units }}
+                        </td>
+
+                        <td>
+                            ₹{{ product.revenue|floatformat:0 }}
+                        </td>
+
+                        <td>
+                            ₹{{ product.profit|floatformat:0 }}
+                        </td>
+
+                        <td>
+                            {{ product.profit_margin|floatformat:2 }}%
+                        </td>
+
+                        <td>
+
+                            {% if product.growth > 0 %}
+
+                            <span class="growth-positive">
+                                +{{ product.growth|floatformat:2 }}%
+                            </span>
+
+                            {% elif product.growth < 0 %}
+
+                            <span class="growth-negative">
+                                {{ product.growth|floatformat:2 }}%
+                            </span>
+
+                            {% else %}
+
+                            <span class="growth-neutral">
+                                0.00%
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if product.return_rate >= 15 %}
+
+                            <span class="return-danger">
+                                {{ product.return_rate|floatformat:2 }}%
+                            </span>
+
+                            {% elif product.return_rate >= 10 %}
+
+                            <span class="return-warning">
+                                {{ product.return_rate|floatformat:2 }}%
+                            </span>
+
+                            {% else %}
+
+                            <span class="return-normal">
+                                {{ product.return_rate|floatformat:2 }}%
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if product.classification == "Best Seller" %}
+
+                            <span class="product-badge badge-best">
+                                Best Seller
+                            </span>
+
+                            {% elif product.classification == "Most Profitable" %}
+
+                            <span class="product-badge badge-profit">
+                                Most Profitable
+                            </span>
+
+                            {% elif product.classification == "Fast Growing" %}
+
+                            <span class="product-badge badge-growth">
+                                Fast Growing
+                            </span>
+
+                            {% elif product.classification == "High Return" %}
+
+                            <span class="product-badge badge-return">
+                                High Return
+                            </span>
+
+                            {% elif product.classification == "Declining" %}
+
+                            <span class="product-badge badge-decline">
+                                Declining
+                            </span>
+
+                            {% else %}
+
+                            <span class="product-badge badge-potential">
+                                Potential
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="product-empty">
+                            No product data available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         BUSINESS INSIGHTS
+    ====================================================== -->
+
+    <div class="product-section-header product-section-spaced">
+
+        <div>
+
+            <span class="product-section-tag">
+                INTELLIGENCE
+            </span>
+
+            <h2>Business Insights</h2>
+
+            <p>
+                Automatically generated observations from
+                product-level data.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="product-insights-grid">
+
+        {% for insight in insights %}
+
+        <div class="product-insight-card">
+
+            <div class="product-insight-icon">
+
+                {% if insight.type == "positive" %}
+                    ↗
+                {% elif insight.type == "warning" %}
+                    ⚠
+                {% else %}
+                    ◈
+                {% endif %}
+
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ insight.title }}
+                </h3>
+
+                <p>
+                    {{ insight.message }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="product-insight-card">
+
+            <div class="product-insight-icon">
+                ◈
+            </div>
+
+            <div>
+
+                <h3>
+                    No insights available
+                </h3>
+
+                <p>
+                    More product data is required to generate
+                    business insights.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =====================================================
+         METHODOLOGY
+    ====================================================== -->
+
+    <div class="product-methodology">
+
+        <div class="methodology-icon">
+            ⓘ
+        </div>
+
+        <div>
+
+            <h3>
+                How Product Intelligence works
+            </h3>
+
+            <p>
+                Smart BI aggregates product-level transactions
+                and calculates revenue, profit, units sold,
+                profitability margins, growth signals and
+                return rates. Products are then classified
+                using multiple business performance indicators.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        // ====================================================
+        // DATA FROM DJANGO
+        // ====================================================
+
+        const topRevenueProducts = [
+            {% for item in top_revenue_products %}
+            {
+                product: "{{ item.product|escapejs }}",
+                revenue: {{ item.revenue|default:0 }}
+            },
+            {% endfor %}
+        ];
+
+
+        const topProfitProducts = [
+            {% for item in top_profit_products %}
+            {
+                product: "{{ item.product|escapejs }}",
+                profit: {{ item.profit|default:0 }}
+            },
+            {% endfor %}
+        ];
+
+
+        const categoryData = [
+            {% for item in category_data %}
+            {
+                category: "{{ item.category|escapejs }}",
+                revenue: {{ item.revenue|default:0 }},
+                profit: {{ item.profit|default:0 }}
+            },
+            {% endfor %}
+        ];
+
+
+        const growthData = [
+            {% for item in growth_data %}
+            {
+                product: "{{ item.product|escapejs }}",
+                growth: {{ item.growth|default:0 }}
+            },
+            {% endfor %}
+        ];
+
+
+        const returnData = [
+            {% for item in return_data %}
+            {
+                product: "{{ item.product|escapejs }}",
+                returnRate: {{ item.return_rate|default:0 }}
+            },
+            {% endfor %}
+        ];
+
+
+        const matrixData = [
+            {% for item in profitability_matrix %}
+            {
+                product: "{{ item.product|escapejs }}",
+                revenue: {{ item.revenue|default:0 }},
+                profit: {{ item.profit|default:0 }},
+                quadrant: "{{ item.quadrant|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+
+        const productTable = [
+            {% for item in product_table %}
+            {
+                classification:
+                    "{{ item.classification|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+
+        // ====================================================
+        // CHART DEFAULTS
+        // ====================================================
+
+        Chart.defaults.font.family =
+            "Inter, Arial, sans-serif";
+
+        Chart.defaults.color =
+            "#94a3b8";
+
+        // ====================================================
+        // REVENUE CHART
+        // ====================================================
+
+        const revenueCanvas =
+            document.getElementById(
+                "revenueProductChart"
+            );
+
+        if (
+            revenueCanvas &&
+            topRevenueProducts.length
+        ) {
+
+            new Chart(
+                revenueCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            topRevenueProducts
+                            .map(
+                                item => item.product
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Revenue",
+
+                                data:
+                                    topRevenueProducts
+                                    .map(
+                                        item =>
+                                            item.revenue
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        function(value) {
+
+                                            return "₹" +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            },
+
+                            y: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        // ====================================================
+        // PROFIT CHART
+        // ====================================================
+
+        const profitCanvas =
+            document.getElementById(
+                "profitProductChart"
+            );
+
+        if (
+            profitCanvas &&
+            topProfitProducts.length
+        ) {
+
+            new Chart(
+                profitCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            topProfitProducts
+                            .map(
+                                item => item.product
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Profit",
+
+                                data:
+                                    topProfitProducts
+                                    .map(
+                                        item =>
+                                            item.profit
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        function(value) {
+
+                                            return "₹" +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            },
+
+                            y: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        // ====================================================
+        // CATEGORY REVENUE
+        // ====================================================
+
+        const categoryRevenueCanvas =
+            document.getElementById(
+                "categoryRevenueChart"
+            );
+
+        if (
+            categoryRevenueCanvas &&
+            categoryData.length
+        ) {
+
+            new Chart(
+                categoryRevenueCanvas,
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels:
+                            categoryData
+                            .map(
+                                item =>
+                                    item.category
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                data:
+                                    categoryData
+                                    .map(
+                                        item =>
+                                            item.revenue
+                                    ),
+
+                                borderWidth: 2,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: "62%",
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "right"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        // ====================================================
+        // CATEGORY PROFIT
+        // ====================================================
+
+        const categoryProfitCanvas =
+            document.getElementById(
+                "categoryProfitChart"
+            );
+
+        if (
+            categoryProfitCanvas &&
+            categoryData.length
+        ) {
+
+            new Chart(
+                categoryProfitCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            categoryData
+                            .map(
+                                item =>
+                                    item.category
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Profit",
+
+                                data:
+                                    categoryData
+                                    .map(
+                                        item =>
+                                            item.profit
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        // ====================================================
+        // GROWTH CHART
+        // ====================================================
+
+        const growthCanvas =
+            document.getElementById(
+                "growthChart"
+            );
+
+        if (
+            growthCanvas &&
+            growthData.length
+        ) {
+
+            const sortedGrowth =
+                [...growthData]
+                .sort(
+                    (a, b) =>
+                        b.growth - a.growth
+                )
+                .slice(
+                    0,
+                    10
+                );
+
+            new Chart(
+                growthCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            sortedGrowth
+                            .map(
+                                item =>
+                                    item.product
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Growth %",
+
+                                data:
+                                    sortedGrowth
+                                    .map(
+                                        item =>
+                                            item.growth
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                ticks: {
+
+                                    callback:
+                                        value =>
+                                            value + "%"
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        // ====================================================
+        // RETURN CHART
+        // ====================================================
+
+        const returnCanvas =
+            document.getElementById(
+                "returnChart"
+            );
+
+        if (
+            returnCanvas &&
+            returnData.length
+        ) {
+
+            const sortedReturns =
+                [...returnData]
+                .sort(
+                    (a, b) =>
+                        b.returnRate
+                        -
+                        a.returnRate
+                )
+                .slice(
+                    0,
+                    10
+                );
+
+            new Chart(
+                returnCanvas,
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            sortedReturns
+                            .map(
+                                item =>
+                                    item.product
+                            ),
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Return Rate",
+
+                                data:
+                                    sortedReturns
+                                    .map(
+                                        item =>
+                                            item.returnRate
+                                    ),
+
+                                borderRadius: 8,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        indexAxis: "y",
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback:
+                                        value =>
+                                            value + "%"
+
+                                }
+
+                            },
+
+                            y: {
+
+                                grid: {
+                                    display: false
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        // ====================================================
+        // PROFITABILITY MATRIX
+        // ====================================================
+
+        const matrixCanvas =
+            document.getElementById(
+                "profitabilityMatrix"
+            );
+
+        if (
+            matrixCanvas &&
+            matrixData.length
+        ) {
+
+            new Chart(
+                matrixCanvas,
+                {
+
+                    type: "scatter",
+
+                    data: {
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Products",
+
+                                data:
+                                    matrixData
+                                    .map(
+                                        item => ({
+                                            x:
+                                                item.revenue,
+
+                                            y:
+                                                item.profit
+                                        })
+                                    ),
+
+                                pointRadius: 7,
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            const item =
+                                                matrixData[
+                                                    context.dataIndex
+                                                ];
+
+                                            return (
+                                                item.product
+                                                +
+                                                " — Revenue ₹"
+                                                +
+                                                Number(
+                                                    item.revenue
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                                +
+                                                ", Profit ₹"
+                                                +
+                                                Number(
+                                                    item.profit
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                )
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text:
+                                        "Revenue"
+
+                                },
+
+                                beginAtZero: true
+
+                            },
+
+                            y: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text:
+                                        "Profit"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        // ====================================================
+        // CLASSIFICATION COUNTS
+        // ====================================================
+
+        let bestSeller = 0;
+        let profitable = 0;
+        let growing = 0;
+        let highReturn = 0;
+        let declining = 0;
+
+        productTable.forEach(
+            item => {
+
+                if (
+                    item.classification
+                    === "Best Seller"
+                ) {
+                    bestSeller++;
+                }
+
+                if (
+                    item.classification
+                    === "Most Profitable"
+                ) {
+                    profitable++;
+                }
+
+                if (
+                    item.classification
+                    === "Fast Growing"
+                ) {
+                    growing++;
+                }
+
+                if (
+                    item.classification
+                    === "High Return"
+                ) {
+                    highReturn++;
+                }
+
+                if (
+                    item.classification
+                    === "Declining"
+                ) {
+                    declining++;
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "bestSellerCount"
+        ).textContent =
+            bestSeller;
+
+
+        document.getElementById(
+            "profitableCount"
+        ).textContent =
+            profitable;
+
+
+        document.getElementById(
+            "growthCount"
+        ).textContent =
+            growing;
+
+
+        document.getElementById(
+            "returnCount"
+        ).textContent =
+            highReturn;
+
+
+        document.getElementById(
+            "decliningCount"
+        ).textContent =
+            declining;
+
+    }
+
+);
+
+</script>
+
+{% endblock %}
