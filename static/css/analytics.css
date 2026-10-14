@@ -431,3 +431,234 @@
     }
 
 }
+.business-card-header span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+}
+
+.business-card-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+}
+
+.business-chart-container {
+    height: 330px;
+    padding: 20px;
+}
+
+.business-chart-container.small {
+    height: 290px;
+}
+
+.business-chart-container.product-chart {
+    height: 400px;
+}
+
+
+/* =========================================================
+   TWO COLUMN
+========================================================= */
+
+.business-two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.business-chart-legend {
+    display: flex;
+    gap: 14px;
+}
+
+.business-chart-legend span {
+    margin: 0;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.business-table-wrapper {
+    overflow-x: auto;
+}
+
+.business-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.business-table th {
+    padding: 13px 20px;
+    text-align: left;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.018);
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.business-table td {
+    padding: 14px 20px;
+    color: var(--text-soft);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+    font-size: 11px;
+}
+
+.business-table td strong {
+    color: var(--text);
+}
+
+.business-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.business-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   INSIGHTS
+========================================================= */
+
+.business-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 20px;
+}
+
+.business-insight {
+    display: flex;
+    gap: 13px;
+    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+}
+
+.business-insight-icon {
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    font-weight: 800;
+}
+
+.business-insight h3 {
+    margin: 0 0 6px;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.business-insight p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.insight-positive .business-insight-icon {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+}
+
+.insight-warning .business-insight-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+}
+
+.insight-neutral .business-insight-icon {
+    background: rgba(14, 255, 207, 0.08);
+    color: var(--accent);
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.business-empty {
+    padding: 35px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1250px) {
+
+    .business-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .business-insights-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .business-header,
+    .business-filter-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .business-date-form {
+        flex-wrap: wrap;
+    }
+
+    .business-two-column {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .business-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .business-header {
+        padding: 20px;
+    }
+
+    .business-header h1 {
+        font-size: 24px;
+    }
+
+    .business-dataset {
+        width: 100%;
+    }
+
+    .business-date-form {
+        width: 100%;
+    }
+
+    .business-date-form input {
+        flex: 1;
+        min-width: 0;
+    }
+
+}
