@@ -1359,3 +1359,26 @@
     }
 
 }
+.regional-table-panel {
+    margin-bottom: 20px;
+}
+
+
+.regional-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border-radius: 13px;
+
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+
+.regional-table {
+    width: 100%;
+
+    min-width: 780px;
+
+    border-collapse: collapse;
+}
