@@ -1026,3 +1026,68 @@ done duplicate
     }
 
 }
+.marketing-page {
+    animation: marketingPageIn 0.55s ease;
+}
+
+@keyframes marketingPageIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ============================================================
+   HERO
+============================================================ */
+
+.marketing-hero {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 32px;
+
+    margin-bottom: 24px;
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(17,24,39,0.98),
+            rgba(12,18,30,0.95)
+        );
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.22);
+}
+
+.marketing-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 320px;
+    height: 320px;
+
+    right: -120px;
+    top: -150px;
+
+    border-radius: 50%;
+
+    background: rgba(59,130,246,0.10);
+
+    filter: blur(30px);
+}
