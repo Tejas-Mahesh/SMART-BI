@@ -2032,3 +2032,45 @@
     font-size: 14px;
 }
 
+.browse-button:hover {
+    background: #1d4ed8;
+}
+
+.selected-file {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    color: #374151;
+    font-size: 13px;
+    flex-wrap: wrap;
+}
+
+.selected-file span {
+    color: #6b7280;
+}
+
+
+/* BUTTON */
+
+.upload-button {
+    width: 100%;
+    border: 0;
+    height: 50px;
+    border-radius: 11px;
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.upload-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
