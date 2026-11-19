@@ -143,7 +143,54 @@
 
     line-height: 1.7;
 }
+.regional-hero::before {
+    content: "";
 
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    right: 12%;
+    top: -180px;
+
+    border: 1px solid rgba(255,255,255,0.04);
+
+    border-radius: 50%;
+
+    animation: regionalFloat 8s ease-in-out infinite;
+}
+
+
+.regional-hero-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 850px;
+}
+
+
+.regional-eyebrow {
+    display: inline-flex;
+
+    padding: 7px 12px;
+
+    margin-bottom: 14px;
+
+    border-radius: 999px;
+
+    background: rgba(59,130,246,0.10);
+
+    border: 1px solid rgba(59,130,246,0.18);
+
+    color: #93c5fd;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.6px;
+}
 
 .regional-dataset {
     display: inline-flex;
